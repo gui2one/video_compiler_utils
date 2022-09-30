@@ -1,3 +1,4 @@
+import os
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
@@ -5,7 +6,7 @@ from PySide2.QtGui import *
 from application_settings import ApplicationSettings
 from options_dialog import OptionsDialog
 
-from utils import detectFileSequence, FFMPEG_thread
+from utils import detect_file_sequence_V2, detectFileSequence, FFMPEG_thread
 class MainWindow(QMainWindow) :
    
     def __init__(self) -> None:
@@ -70,11 +71,24 @@ class Window(QWidget):
         
     def dropEvent(self, event):
 
+        ffmpeg_path = self.settings.getFFMPEGPath()
         if event.mimeData().hasUrls() :
             url :QUrl = event.mimeData().urls()[0]
             good_path = url.toLocalFile()
-
-            cmd, num_frames = detectFileSequence(good_path)
+            dir_name = os.path.basename(good_path)
+            output = os.path.join(os.path.dirname(good_path), f"{dir_name}.mp4")
+            pattern, num_frames = detect_file_sequence_V2(good_path)
+            cmd = [
+                    f'{ffmpeg_path}/bin/ffmpeg', 
+                    '-y',
+                    f'-i', f'{pattern}',
+                    f'-pix_fmt', f'yuv420p', 
+                    f'-c:v', f'libx264', 
+                    f'-preset', 'slow', 
+                    f'-crf', f'10' ,
+                    f'-c:a', 'copy' ,
+                    f'{output}'
+                ]     
 
             self.ffmpeg_thread = FFMPEG_thread(cmd, num_frames)
             self.ffmpeg_thread.message_event.connect(self.on_ffmpeg_thread_message)
