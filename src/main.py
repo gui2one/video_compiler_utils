@@ -81,7 +81,7 @@ class Window(QWidget):
             cmd = [
                     f'{ffmpeg_path}/bin/ffmpeg', 
                     '-y',
-                    '-apply_trc', 'iec61966_2_1',
+                    '-apply_trc', 'iec61966_2_1', # automatic gamma correction even with exrs !!
                     f'-i', f'{pattern}',
                     f'-pix_fmt', f'yuv420p', 
                     f'-c:v', f'libx264', 
