@@ -6,6 +6,7 @@ from PySide2.QtGui import *
 from application_settings import ApplicationSettings
 from options_dialog import OptionsDialog
 
+from presets import FFMpegPreset
 from utils import detect_file_sequence_V2, detectFileSequence, FFMPEG_thread
 class MainWindow(QMainWindow) :
    
@@ -76,21 +77,34 @@ class Window(QWidget):
             url :QUrl = event.mimeData().urls()[0]
             good_path = url.toLocalFile()
             dir_name = os.path.basename(good_path)
-            output = os.path.join(os.path.dirname(good_path), f"{dir_name}.mp4")
+            output = os.path.join(os.path.dirname(good_path), f"{dir_name}")
             pattern, num_frames = detect_file_sequence_V2(good_path)
+            # cmd = [
+            #         f'{ffmpeg_path}/bin/ffmpeg', 
+            #         '-y',
+            #         '-apply_trc', 'iec61966_2_1', # automatic gamma correction even with exrs !!
+            #         f'-i', f'{pattern}',
+            #         f'-pix_fmt', f'yuv420p', 
+            #         f'-c:v', f'libx264', 
+            #         f'-preset', 'slow', 
+            #         f'-crf', f'10' ,
+                    
+            #         f'-c:a', 'copy',
+            #         f'{output}'
+            #     ]    
             cmd = [
                     f'{ffmpeg_path}/bin/ffmpeg', 
                     '-y',
                     '-apply_trc', 'iec61966_2_1', # automatic gamma correction even with exrs !!
                     f'-i', f'{pattern}',
                     f'-pix_fmt', f'yuv420p', 
-                    f'-c:v', f'libx264', 
-                    f'-preset', 'slow', 
-                    f'-crf', f'10' ,
                     
-                    f'-c:a', 'copy',
-                    f'{output}'
-                ]     
+                    # *FFMpegPreset.H265(output=output+".mp4")
+                    *FFMpegPreset.ProRes(output=output+".mov")
+                    
+                ]    
+            
+            # FFMpegPreset.H264()
 
             self.ffmpeg_thread = FFMPEG_thread(cmd, num_frames)
             self.ffmpeg_thread.message_event.connect(self.on_ffmpeg_thread_message)
