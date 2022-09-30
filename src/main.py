@@ -81,12 +81,14 @@ class Window(QWidget):
             cmd = [
                     f'{ffmpeg_path}/bin/ffmpeg', 
                     '-y',
+                    '-apply_trc', 'iec61966_2_1',
                     f'-i', f'{pattern}',
                     f'-pix_fmt', f'yuv420p', 
                     f'-c:v', f'libx264', 
                     f'-preset', 'slow', 
                     f'-crf', f'10' ,
-                    f'-c:a', 'copy' ,
+                    
+                    f'-c:a', 'copy',
                     f'{output}'
                 ]     
 

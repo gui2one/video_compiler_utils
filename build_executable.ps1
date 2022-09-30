@@ -1,0 +1,1 @@
+pyinstaller --onefile --noconsole --paths=$PSScriptRoot\env\Lib\site-packages ./src/main.py
