@@ -32,15 +32,18 @@ class FFMPEG_thread(QThread):
             msg = line.decode('utf-8').strip().replace("\n", "").replace("\r", "").strip()
             split = msg.split("frame= ")
             
+            
+            ## a little hacky, but it works for now:
+            ## I just filter ffmpeg output lines and search for 'frame= ${num} blabla'
+            ## when ${num} is equal to self.num_frames, abort ! work is done ....
+            ## doesn't work if number of files in sequence doesn't equal number of files in directory !
+            
+            ## I NEED SOMETHING MORE ROBUST
             if len(split) > 1:    
                 filtered = [item.strip() for item in split if len(item.strip())> 0]
                 stripped = [item.strip() for item in filtered]
                 numbers = [int(item.split(" ")[0]) for item in stripped]
-                # print(split)
-                # print(stripped)
-                # print(numbers)
-                
-                # print(self.num_frames)
+
                 for num in numbers :
                     if num == self.num_frames:
                         self.exit()
