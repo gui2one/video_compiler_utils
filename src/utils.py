@@ -32,6 +32,7 @@ class FFMPEG_thread(QThread):
             msg = line.decode('utf-8').strip().replace("\n", "").replace("\r", "").strip()
             split = msg.split("frame= ")
             
+            self.message_event.emit(msg)
             
             ## a little hacky, but it works for now:
             ## I just filter ffmpeg output lines and search for 'frame= ${num} blabla'
@@ -47,8 +48,10 @@ class FFMPEG_thread(QThread):
                 for num in numbers :
                     if num == self.num_frames:
                         self.exit()
+                        # print(f"<span>[ INFO ] {message_str}</span>",  flush=True)
+                        message_str = "Done"
+                        self.message_event.emit(f"<span style='color:#228822;'>[ INFO ] {message_str}</span>")
                         abort = True
-            self.message_event.emit(msg)
             
     def exit(self) -> None:
         print("Thread EXIT")
