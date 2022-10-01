@@ -58,62 +58,6 @@ class FFMPEG_thread(QThread):
         self.process.kill()
         return super().exit()            
 
-def detectFileSequence(path) :
-    is_a_directory = os.path.isdir(path)
-    if is_a_directory == True:
-        # print("this is a dir")
-        
-        ffmpeg_path = ApplicationSettings().getFFMPEGPath()
-        files = os.listdir(path)
-
-        
-        # num = re.findall('\d+', files[0])
-        mo = re.finditer('\d+', files[0])
-
-        seqs = []
-        for match in mo:
-            # print(match)
-            seqs.append((match.start(), match.end()))
-            
-        # print(seqs)
-        start = seqs[len(seqs)-1][0]
-        end   = seqs[len(seqs)-1][1]
-        
-        base = files[0]
-        left_part = base[0: start]
-        right_part = base[end: len(base)]
-        
-        length = end-start
-        file_pattern = f'{left_part}%0{length}d{right_part}'
-
-        
-        final_path_string = os.path.join(path, file_pattern)
-       
-        
-        final_path_string = final_path_string.replace("/", "\\") #.replace("/", "\\\\")
-
-        dir_name = os.path.basename(path)
-        
-        output = os.path.join(os.path.dirname(path), f"{dir_name}.mp4")
-        
-        cmd = [
-                f'{ffmpeg_path}/bin/ffmpeg', 
-                '-y',
-                f'-i', f'{final_path_string}',
-                f'-pix_fmt', f'yuv420p', 
-                f'-c:v', f'libx264', 
-                f'-preset', 'slow', 
-                f'-crf', f'10' ,
-                f'-c:a', 'copy' ,
-                f'{output}'
-            ]       
-
-        
-        return cmd, len(files)
-
-    else :
-        print("this is a File")
-        return None      
     
 def detect_file_sequence_V2(dir_path):
     if os.path.isdir(dir_path):
@@ -131,7 +75,7 @@ def detect_file_sequence_V2(dir_path):
         num_pattern = None
 
         if len(ranges) :
-            num_pattern = matches[len(matches)-1]
+            num_pattern = matches[len(matches)-1] # assume sequence numbers are the last numbers in file name 
 
             
         if num_pattern != None :

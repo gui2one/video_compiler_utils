@@ -7,7 +7,7 @@ from application_settings import ApplicationSettings
 from options_dialog import OptionsDialog
 
 from presets import FFMpegPreset, PRORES_profiles
-from utils import detect_file_sequence_V2, detectFileSequence, FFMPEG_thread
+from utils import detect_file_sequence_V2, FFMPEG_thread
 class MainWindow(QMainWindow) :
    
     def __init__(self) -> None:
@@ -80,7 +80,9 @@ class Window(QWidget):
             output = os.path.join(os.path.dirname(good_path), f"{dir_name}")
             pattern, start_frame, num_frames = detect_file_sequence_V2(good_path)
             
+            print("pattern : --->", pattern)
             print("start_frame : --->", start_frame)
+            print("num_frames : --->", num_frames)
             # cmd = [
             #         f'{ffmpeg_path}/bin/ffmpeg', 
             #         '-y',
