@@ -101,8 +101,8 @@ class Window(QWidget):
                     f'-start_number', f'{start_frame}',
                     f'-i', f'{pattern}',
                     
-                    *FFMpegPreset.H264(output=output+".mp4")
-                    # *FFMpegPreset.ProRes(profile=PRORES_profiles.PROXY,output=output+".mov")
+                    # *FFMpegPreset.H264(output=output)
+                    *FFMpegPreset.ProRes(profile=PRORES_profiles.LT,output=output)
                     
                 ]    
             

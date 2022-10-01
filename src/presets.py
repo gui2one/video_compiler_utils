@@ -22,26 +22,28 @@ class FFMpegPreset :
     def H264(quality  : int = 10, output : str = "output.mp4"):
         print("H264 preset")
         args = [
-                    f'-c:v', f'libx264', 
-                    f'-preset', 'slow', 
-                    f'-crf', f'{quality}' ,
-                    f'-pix_fmt', f'yuv420p', 
+                    '-c:v', 'libx264', 
+                    '-preset', 'slow', 
+                    '-crf', f'{quality}' ,
+                    '-pix_fmt', 'yuv420p', 
                     '-filter_complex', "color=black,format=rgb24[c];[c][0]scale2ref[c][i];[c][i]overlay=format=auto:shortest=1,setsar=1",
-                    f'-c:a', 'copy',
-                    f'{output}'
+                    '-c:a', 'copy',
+                    
+                    f'{output}_H264.mp4'
                 ]  
         return args
     
     def H265(quality  : int = 10, output : str = "output.mp4"):
         print("H265 preset")
         args = [
-                    f'-c:v', f'libx265', 
-                    f'-preset', 'slow', 
-                    f'-crf', f'{quality}' ,
-                    f'-pix_fmt', f'yuv420p',    
+                    '-c:v', 'libx265', 
+                    '-preset', 'slow', 
+                    '-crf', f'{quality}' ,
+                    '-pix_fmt', f'yuv420p',    
                     '-filter_complex', "color=black,format=rgb24[c];[c][0]scale2ref[c][i];[c][i]overlay=format=auto:shortest=1,setsar=1",            
-                    f'-c:a', 'copy',
-                    f'{output}'
+                    '-c:a', 'copy',
+                    
+                    f'{output}_H265.mp4'
                 ]  
         return args
     
@@ -68,9 +70,6 @@ class FFMpegPreset :
             4 : standard
             5 : hq
         """
-        
-        
-        print("ProRes preset")
 
         quant_mat : PRORES_quant_mats = None
         yuv_input = "yuv422p10"
@@ -89,12 +88,13 @@ class FFMpegPreset :
             quant_mat = PRORES_quant_mats.HQ
             yuv_input = "yuv444p10"
         args = [
-                    f'-c:v', f'prores', 
-                    f'-pix_fmt', f'{yuv_input}', 
-                    f'-profile:v', f'{profile.value}', 
-                    f'-quant_mat', f'{quant_mat.value}' ,
+                    '-c:v', 'prores', 
+                    '-pix_fmt', f'{yuv_input}', 
+                    '-profile:v', f'{profile.value}', 
+                    '-quant_mat', f'{quant_mat.value}' ,
+                    '-filter_complex', "color=black,format=rgb24[c];[c][0]scale2ref[c][i];[c][i]overlay=format=auto:shortest=1,setsar=1",
+                    '-c:a', 'copy',
                     
-                    f'-c:a', 'copy',
-                    f'{output}'
+                    f'{output}_PRORES.mov'
                 ]  
         return args
