@@ -6,7 +6,7 @@ from PySide2.QtGui import *
 from application_settings import ApplicationSettings
 from options_dialog import OptionsDialog
 
-from presets import FFMpegPreset
+from presets import FFMpegPreset, PRORES_profiles
 from utils import detect_file_sequence_V2, detectFileSequence, FFMPEG_thread
 class MainWindow(QMainWindow) :
    
@@ -97,10 +97,10 @@ class Window(QWidget):
                     '-y',
                     '-apply_trc', 'iec61966_2_1', # automatic gamma correction even with exrs !!
                     f'-i', f'{pattern}',
-                    f'-pix_fmt', f'yuv420p', 
+
                     
                     # *FFMpegPreset.H265(output=output+".mp4")
-                    *FFMpegPreset.ProRes(output=output+".mov")
+                    *FFMpegPreset.ProRes(profile=PRORES_profiles.PROXY,output=output+".mov")
                     
                 ]    
             
