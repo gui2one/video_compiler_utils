@@ -7,14 +7,14 @@ from application_settings import ApplicationSettings
 from options_dialog import OptionsDialog
 
 from presets import FFMpegPreset, PRORES_profiles
-from utils import detect_file_sequence_V2, FFMPEG_thread
+from utils import detect_file_sequence_V2, FFMPEG_thread, FFMPEG_thread_V2, ffmpeg_input_params, ffmpeg_output_params
 class MainWindow(QMainWindow) :
    
     def __init__(self) -> None:
         super(MainWindow, self).__init__()
         
         self.setGeometry(800,200, 512, 512)
-        self.setWindowTitle("Video Compiler Utils")
+        self.setWindowTitle("VCU - Video Compiler Utils - v0.0.1a")
         self.window = Window(self)
         self.setCentralWidget(self.window)
         self.options_dialog = OptionsDialog()
@@ -36,6 +36,7 @@ class MainWindow(QMainWindow) :
     
 class Window(QWidget):
     ffmpeg_thread : FFMPEG_thread
+    ffmpeg_thread_2 : FFMPEG_thread_V2
     def __init__(self, parent) :
         super(Window, self).__init__(parent=parent)
 
@@ -83,38 +84,40 @@ class Window(QWidget):
             print("pattern : --->", pattern)
             print("start_frame : --->", start_frame)
             print("num_frames : --->", num_frames)
+
             # cmd = [
             #         f'{ffmpeg_path}/bin/ffmpeg', 
             #         '-y',
             #         '-apply_trc', 'iec61966_2_1', # automatic gamma correction even with exrs !!
+            #         f'-start_number', f'{start_frame}',
             #         f'-i', f'{pattern}',
-            #         f'-pix_fmt', f'yuv420p', 
-            #         f'-c:v', f'libx264', 
-            #         f'-preset', 'slow', 
-            #         f'-crf', f'10' ,
                     
-            #         f'-c:a', 'copy',
-            #         f'{output}'
-            #     ]    
-            cmd = [
-                    f'{ffmpeg_path}/bin/ffmpeg', 
-                    '-y',
-                    '-apply_trc', 'iec61966_2_1', # automatic gamma correction even with exrs !!
-                    f'-start_number', f'{start_frame}',
-                    f'-i', f'{pattern}',
-                    
-                    # *FFMpegPreset.H264(output=output)
-                    *FFMpegPreset.ProRes(profile=PRORES_profiles.LT,output=output)
-                    
-                ]    
-            
-            # FFMpegPreset.H264()
+            #         # *FFMpegPreset.H264(output=output)
+            #         *FFMpegPreset.ProRes(profile=PRORES_profiles.LT,output=output)
+            # ]    
 
-            self.ffmpeg_thread = FFMPEG_thread(cmd, num_frames)
-            self.ffmpeg_thread.message_event.connect(self.on_ffmpeg_thread_message)
-            self.ffmpeg_thread.start()
+            # self.ffmpeg_thread = FFMPEG_thread(cmd, num_frames)
+            # self.ffmpeg_thread.message_event.connect(self.on_ffmpeg_thread_message)
+            # self.ffmpeg_thread.start()
+            
+            
+            in_params = ffmpeg_input_params()
+            in_params.pattern = pattern
+            in_params.start_number = start_frame
+            in_params.num_frames = num_frames
+            
+            out_params = ffmpeg_output_params()
+            out_params.output_name = output+".mp4"
+            out_params.vcodec = "libx264"
+            
+            self.ffmpeg_thread_2 = FFMPEG_thread_V2(in_params, out_params)
+            self.ffmpeg_thread_2.message_event.connect(self.on_ffmpeg_thread_message_2)
+            self.ffmpeg_thread_2.start()
             
     def on_ffmpeg_thread_message(self, message):  
+        self.text_area.append(message.strip())   
+
+    def on_ffmpeg_thread_message_2(self, message):  
         self.text_area.append(message.strip())   
     
 app = QApplication([])
