@@ -26,6 +26,7 @@ class FFMpegPreset :
                     f'-preset', 'slow', 
                     f'-crf', f'{quality}' ,
                     f'-pix_fmt', f'yuv420p', 
+                    '-filter_complex', "color=black,format=rgb24[c];[c][0]scale2ref[c][i];[c][i]overlay=format=auto:shortest=1,setsar=1",
                     f'-c:a', 'copy',
                     f'{output}'
                 ]  
@@ -37,7 +38,8 @@ class FFMpegPreset :
                     f'-c:v', f'libx265', 
                     f'-preset', 'slow', 
                     f'-crf', f'{quality}' ,
-                    f'-pix_fmt', f'yuv420p',                
+                    f'-pix_fmt', f'yuv420p',    
+                    '-filter_complex', "color=black,format=rgb24[c];[c][0]scale2ref[c][i];[c][i]overlay=format=auto:shortest=1,setsar=1",            
                     f'-c:a', 'copy',
                     f'{output}'
                 ]  

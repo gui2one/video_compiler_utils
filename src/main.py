@@ -78,7 +78,9 @@ class Window(QWidget):
             good_path = url.toLocalFile()
             dir_name = os.path.basename(good_path)
             output = os.path.join(os.path.dirname(good_path), f"{dir_name}")
-            pattern, num_frames = detect_file_sequence_V2(good_path)
+            pattern, start_frame, num_frames = detect_file_sequence_V2(good_path)
+            
+            print("start_frame : --->", start_frame)
             # cmd = [
             #         f'{ffmpeg_path}/bin/ffmpeg', 
             #         '-y',
@@ -96,11 +98,11 @@ class Window(QWidget):
                     f'{ffmpeg_path}/bin/ffmpeg', 
                     '-y',
                     '-apply_trc', 'iec61966_2_1', # automatic gamma correction even with exrs !!
+                    f'-start_number', f'{start_frame}',
                     f'-i', f'{pattern}',
-
                     
-                    # *FFMpegPreset.H265(output=output+".mp4")
-                    *FFMpegPreset.ProRes(profile=PRORES_profiles.PROXY,output=output+".mov")
+                    *FFMpegPreset.H264(output=output+".mp4")
+                    # *FFMpegPreset.ProRes(profile=PRORES_profiles.PROXY,output=output+".mov")
                     
                 ]    
             

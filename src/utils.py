@@ -151,7 +151,7 @@ def detect_file_sequence_V2(dir_path):
             final_pattern = f'{parts[0]}%0{len(num_pattern)}d{parts[1]}'
             final_path = os.path.join(dir_path, final_pattern)
             final_path = final_path.replace("\\", "/")
-            return final_path, num_files
+            return final_path, int(num_pattern), num_files
         
         return None
         
