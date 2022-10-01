@@ -68,7 +68,13 @@ class FFMPEG_thread_V2(QThread):
             
             ).overwrite_output()
         
-        output.run()
+
+        """
+        
+            check run_async !!!!!!!!
+        
+        """
+        output.run(capture_stdout=True, capture_stderr=True)
         
         self.message_event.emit("DONE ?")
         
