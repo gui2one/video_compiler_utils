@@ -1,7 +1,7 @@
 import os
 import re
 import subprocess
-from subprocess import Popen, PIPE, STDOUT
+from subprocess import DETACHED_PROCESS, Popen, PIPE, STDOUT
 import sys
 from typing import Tuple
 
@@ -67,7 +67,8 @@ class FFMPEG_thread_V2(QThread):
             )
             .overwrite_output()
             .global_args("-loglevel", "info")
-            .run_async(pipe_stdout=True, pipe_stderr=True)
+            .run_async(pipe_stdout=True, pipe_stderr=True, quiet=True)
+            
         )
         
         buf = bytearray()
