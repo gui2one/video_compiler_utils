@@ -63,10 +63,10 @@ class FFMPEG_thread_V2(QThread):
             )
             .output(
             self.out_params.output_name,
-            vcodec=self.out_params.vcodec,
-            
+            vcodec=self.out_params.vcodec
             )
             .overwrite_output()
+            .global_args("-loglevel", "info")
             .run_async(pipe_stdout=True, pipe_stderr=True)
         )
         
@@ -96,55 +96,8 @@ class FFMPEG_thread_V2(QThread):
         return super().exit()  
     
 
-class FFMPEG_thread(QThread):
-    message_event = Signal(str)
-    def __init__(self, cmd, num_frames, parent = None ):
-        super(FFMPEG_thread, self).__init__(parent)
-        self.cmd = cmd
-        self.num_frames = num_frames
-
-
-    def run(self):
-        self.process = Popen( self.cmd, 
-                stdout = PIPE, 
-                stderr = STDOUT,
-                shell = True)
-        abort = False
-        while not abort :
-            line = self.process.stdout.readline()
-            if not line : continue
-            # print(f"got line : {line.decode('utf-8')}")
-            msg = line.decode('utf-8').strip().replace("\n", "").replace("\r", "").strip()
-            split = msg.split("frame= ")
-            
-            self.message_event.emit(msg)
-            
-            ## a little hacky, but it works for now:
-            ## I just filter ffmpeg output lines and search for 'frame= ${num} blabla'
-            ## when ${num} is equal to self.num_frames, abort ! work is done ....
-            ## doesn't work if number of files in sequence doesn't equal number of files in directory !
-            
-            ## I NEED SOMETHING MORE ROBUST
-            if len(split) > 1:    
-                filtered = [item.strip() for item in split if len(item.strip())> 0]
-                stripped = [item.strip() for item in filtered]
-                numbers = [int(item.split(" ")[0]) for item in stripped]
-
-                for num in numbers :
-                    if num == self.num_frames:
-                        self.exit()
-                        # print(f"<span>[ INFO ] {message_str}</span>",  flush=True)
-                        message_str = "Done"
-                        self.message_event.emit(f"<span style='color:#228822;'>[ INFO ] {message_str}</span>")
-                        abort = True
-            
-    def exit(self) -> None:
-        print("Thread EXIT")
-        self.process.kill()
-        return super().exit()            
-
     
-def detect_file_sequence_V2(dir_path):
+def detect_file_sequence(dir_path):
     if os.path.isdir(dir_path):
         all_files = os.listdir(dir_path)
 
@@ -182,9 +135,9 @@ def detect_file_sequence_V2(dir_path):
             final_path = final_path.replace("\\", "/")
             return final_path, int(num_pattern), num_files
         
-        return None
+        return None, None, None
         
     else :
         print("Not a dir")
-        return None
+        return None, None, None
         

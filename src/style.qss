@@ -8,6 +8,27 @@ QLabel#drop_label{
     font-size : 32px;
 }
 
-QTextEdit#text_area ~ a{
+QTextEdit#text_area {
+    font-size : 12px;
+}
+QTextEdit#text_area  a{
+    font-size : 16px !important;
     color : white !important;
 }
+QTextEdit#text_area  a:hover{
+    text-decoration : none !important;
+}
+
+#preset_chooser QLabel{
+
+    font-size : 20px;
+}
+#preset_chooser QComboBox{
+
+    font-size : 20px;
+
+}
+/* 
+QAbstractItemView{
+    -webkit-background-composite: red;
+} */
