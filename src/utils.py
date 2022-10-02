@@ -69,25 +69,21 @@ class FFMPEG_thread_V2(QThread):
             .overwrite_output()
             .run_async(pipe_stdout=True, pipe_stderr=True)
         )
+        
+        buf = bytearray()
         exit = False
         while not exit:
-            
-            for line in iter(process.stderr.readline, b''):
-                print(">>> " + line.decode("utf-8").replace("\\r", '\\n'))
-                # process.stderr.flush()
-            # err = process.stderr.readline()
-            # # decoded = err.decode("utf-8").replace("\r\n","")
-            # # print(decoded)
-            # content = err.decode('utf-8').strip()
-            # if len(content) > 0: 
-            #     self.message_event.emit(content)
-            #     process.stderr.flush()
-            # if err.decode('utf-8') != "": 
-            #     # print("content : " , content, flush=True)
-            #     pass
-            # else:
-            #     exit = True
-                
+            c = process.stderr.read(1)
+            # print(buf.decode('utf-8'), flush=True)
+            if c == b'':
+                break
+            if c.decode('utf-8') == '\r':
+                msg = buf.decode('utf-8')
+                # print(msg, flush=True)
+                self.message_event.emit(msg)
+                buf = bytearray()
+            else :
+                buf += c
         result_path = self.out_params.output_name.replace("\\", "/")
         self.message_event.emit("click to run ->")
         self.message_event.emit(" ")
