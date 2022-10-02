@@ -1,6 +1,7 @@
 env/
+build/*
 build/
-build/**
+build/main/
 dist/
 dist/**
 **/__pycache__/**

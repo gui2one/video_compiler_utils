@@ -10,7 +10,7 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from application_settings import ApplicationSettings
 
-import ffmpeg as ff
+import ffmpeg
 
 class ffmpeg_input_params :
     pattern : str
@@ -53,30 +53,46 @@ class FFMPEG_thread_V2(QThread):
             smpte428_1                   .D.V.... SMPTE ST 428-1
         """
         
-        input = ff.input(
+        process = (
+            ffmpeg.input(
             self.in_params.pattern, 
             start_number = self.in_params.start_number,
             apply_trc ='iec61966_2_1',
             pix_fmt = 'yuv420p',
             filter_complex = "color=black,format=rgb24[c];[c][0]scale2ref[c][i];[c][i]overlay=format=auto:shortest=1,setsar=1"
             )
-        
-        output = ff.output(
-            input.video, 
-            self.out_params.output_name, 
+            .output(
+            self.out_params.output_name,
             vcodec=self.out_params.vcodec,
             
-            ).overwrite_output()
-        
-
-        """
-        
-            check run_async !!!!!!!!
-        
-        """
-        output.run(capture_stdout=True, capture_stderr=True)
-        
-        self.message_event.emit("DONE ?")
+            )
+            .overwrite_output()
+            .run_async(pipe_stdout=True, pipe_stderr=True)
+        )
+        exit = False
+        while not exit:
+            
+            for line in iter(process.stderr.readline, b''):
+                print(">>> " + line.decode("utf-8").replace("\\r", '\\n'))
+                # process.stderr.flush()
+            # err = process.stderr.readline()
+            # # decoded = err.decode("utf-8").replace("\r\n","")
+            # # print(decoded)
+            # content = err.decode('utf-8').strip()
+            # if len(content) > 0: 
+            #     self.message_event.emit(content)
+            #     process.stderr.flush()
+            # if err.decode('utf-8') != "": 
+            #     # print("content : " , content, flush=True)
+            #     pass
+            # else:
+            #     exit = True
+                
+        result_path = self.out_params.output_name.replace("\\", "/")
+        self.message_event.emit("click to run ->")
+        self.message_event.emit(" ")
+        self.message_event.emit(f"<a style='color: white; font-weight:bold;' href='{result_path}'>{result_path}</a>")
+        self.message_event.emit(" ")
         
     def exit(self) -> None:
         print("Thread EXIT")

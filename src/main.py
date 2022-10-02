@@ -1,11 +1,12 @@
 import os
+from typing import Text
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 
 from application_settings import ApplicationSettings
 from options_dialog import OptionsDialog
-
+from text_output_window import TextOutputWidget
 from presets import FFMpegPreset, PRORES_profiles
 from utils import detect_file_sequence_V2, FFMPEG_thread, FFMPEG_thread_V2, ffmpeg_input_params, ffmpeg_output_params
 class MainWindow(QMainWindow) :
@@ -18,6 +19,7 @@ class MainWindow(QMainWindow) :
         self.window = Window(self)
         self.setCentralWidget(self.window)
         self.options_dialog = OptionsDialog()
+
         
         option_menu = self.menuBar().addMenu("Option")
         
@@ -37,6 +39,7 @@ class MainWindow(QMainWindow) :
 class Window(QWidget):
     ffmpeg_thread : FFMPEG_thread
     ffmpeg_thread_2 : FFMPEG_thread_V2
+    # text_output : TextOutputWidget
     def __init__(self, parent) :
         super(Window, self).__init__(parent=parent)
 
@@ -62,7 +65,8 @@ class Window(QWidget):
         label.setObjectName("drop_label")
         layout.addWidget(label,alignment=Qt.AlignCenter)
         
-        self.text_area = QTextEdit()
+        self.text_area = TextOutputWidget()
+        self.text_area.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
         self.text_area.setReadOnly(True)
         self.text_area.setAcceptRichText(True)
         layout.addWidget(self.text_area)        

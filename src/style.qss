@@ -7,3 +7,7 @@
 QLabel#drop_label{
     font-size : 32px;
 }
+
+QTextEdit#text_area ~ a{
+    color : white !important;
+}
