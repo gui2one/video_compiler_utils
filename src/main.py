@@ -120,11 +120,14 @@ class Window(QWidget):
                  
                  
                 if  os.path.exists(self.out_params.output_name) :            
-                    print("File already exists")
-                    diag = ConfirmDialog("Are you sure ?", self)
+                    name = os.path.basename(self.out_params.output_name)
+                    diag = ConfirmDialog(f"<div style='font-size : 16px;'><span style='font-weight :bold;color:red;'>{name}</span> already exist in this directory.<br><br> Overwrite ?<div>", self)
                     diag.accept.connect(self.onAcceptOverwrite)
                     diag.exec_()
-                    # sys.exit(0)           
+                    # sys.exit(0)    
+                    
+                else:
+                    self.onAcceptOverwrite()
                              
 
             
