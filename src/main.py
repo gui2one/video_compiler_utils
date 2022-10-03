@@ -1,4 +1,5 @@
 import os
+import sys
 from typing import Text
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
@@ -8,7 +9,9 @@ from application_settings import ApplicationSettings
 from options_dialog import OptionsDialog
 from preset_chooser_widget import PresetsChooser
 from text_output_window import TextOutputWidget
+from confirm_dialog import ConfirmDialog
 from presets import FFMpegPreset, PRORES_profiles
+
 from utils import (
     detect_file_sequence, 
     FFMPEG_thread_V2, 
@@ -98,34 +101,44 @@ class Window(QWidget):
             
             if pattern != None:
 
+                self.in_params = ffmpeg_input_params()
+                self.in_params.pattern = pattern
+                self.in_params.start_number = start_frame
+                self.in_params.num_frames = num_frames
                 
-                in_params = ffmpeg_input_params()
-                in_params.pattern = pattern
-                in_params.start_number = start_frame
-                in_params.num_frames = num_frames
-                
-                out_params = ffmpeg_output_params()
+                self.out_params = ffmpeg_output_params()
                 
                 if self.chooser.getCurrentIndex() == 0 :
-                    out_params.output_name = output+"_H264.mp4"
-                    out_params.vcodec = "libx264"
+                    self.out_params.output_name = output+"_H264.mp4"
+                    self.out_params.vcodec = "libx264"
                 elif self.chooser.getCurrentIndex() == 1 :
-                    out_params.output_name = output+"_H265.mp4"
-                    out_params.vcodec = "libx265"
+                    self.out_params.output_name = output+"_H265.mp4"
+                    self.out_params.vcodec = "libx265"
                 elif self.chooser.getCurrentIndex() == 2 :
-                    out_params.output_name = output+"_PRORES.mov"
-                    out_params.vcodec = "prores"
-                    
-                self.ffmpeg_thread = FFMPEG_thread_V2(in_params, out_params)
-                self.ffmpeg_thread.message_event.connect(self.on_ffmpeg_thread_message_2)
-                self.ffmpeg_thread.start()
+                    self.out_params.output_name = output+"_PRORES.mov"
+                    self.out_params.vcodec = "prores"
+                 
+                 
+                if  os.path.exists(self.out_params.output_name) :            
+                    print("File already exists")
+                    diag = ConfirmDialog("Are you sure ?", self)
+                    diag.accept.connect(self.onAcceptOverwrite)
+                    diag.exec_()
+                    # sys.exit(0)           
+                             
+
             
     def on_ffmpeg_thread_message(self, message):  
         self.text_area.append(message.strip())   
 
     def on_ffmpeg_thread_message_2(self, message):  
         self.text_area.append(message.strip())   
-    
+        
+    def onAcceptOverwrite(self):
+        self.ffmpeg_thread = FFMPEG_thread_V2(self.in_params, self.out_params)
+        self.ffmpeg_thread.message_event.connect(self.on_ffmpeg_thread_message_2)
+        self.ffmpeg_thread.start()
+
 app = QApplication([])
 
 with open("src/style.qss", "r") as file:
