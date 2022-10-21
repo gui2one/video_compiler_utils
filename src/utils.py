@@ -54,7 +54,15 @@ class FFMPEG_thread_V2(QThread):
             smpte428_1                   .D.V.... SMPTE ST 428-1
         """
         
-        process = Popen(["ffmpeg.exe", "-apply_trc", "iec61966_2_1","-i", self.in_params.pattern, *FFMpegPreset.H264(output=self.out_params.output_name)], stdout=PIPE, stderr=PIPE)
+        process = Popen(
+            [
+                "ffmpeg.exe", "-y",
+                "-apply_trc", "iec61966_2_1",
+                "-i", self.in_params.pattern,
+                *FFMpegPreset.H264(output=self.out_params.output_name)
+            ], 
+            creationflags=DETACHED_PROCESS,
+            stdout=PIPE, stderr=PIPE)
         buf = bytearray()
         exit = False
         while not exit:
