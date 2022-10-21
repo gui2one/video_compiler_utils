@@ -19,7 +19,7 @@ class PRORES_quant_mats(Enum):
 class FFMpegPreset :
     
     @staticmethod
-    def H264(quality  : int = 10, output : str = "output.mp4"):
+    def H264(quality  : int = 10, output : str = "C:/output.mp4"):
         print("H264 preset")
         args = [
                     '-c:v', 'libx264', 
@@ -29,7 +29,7 @@ class FFMpegPreset :
                     '-filter_complex', "color=black,format=rgb24[c];[c][0]scale2ref[c][i];[c][i]overlay=format=auto:shortest=1,setsar=1",
                     '-c:a', 'copy',
                     
-                    f'{output}_H264.mp4'
+                    f'{output}'
                 ]  
         return args
     

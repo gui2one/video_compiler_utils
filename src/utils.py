@@ -1,7 +1,8 @@
+from multiprocessing.connection import Pipe
 import os
 import re
 import subprocess
-from subprocess import DETACHED_PROCESS, Popen, PIPE, STDOUT
+from subprocess import DETACHED_PROCESS, Popen, PIPE, STDOUT, call
 import sys
 from typing import Tuple
 
@@ -11,6 +12,8 @@ from PySide2.QtGui import *
 from application_settings import ApplicationSettings
 
 import ffmpeg
+
+from presets import FFMpegPreset
 
 class ffmpeg_input_params :
     pattern : str
@@ -53,30 +56,33 @@ class FFMPEG_thread_V2(QThread):
             smpte428_1                   .D.V.... SMPTE ST 428-1
         """
         
-        process = (
-            ffmpeg.input(
-            self.in_params.pattern, 
-            start_number = self.in_params.start_number,
-            apply_trc ='iec61966_2_1',
-            pix_fmt = 'yuv420p',
-            filter_complex = "color=black,format=rgb24[c];[c][0]scale2ref[c][i];[c][i]overlay=format=auto:shortest=1,setsar=1"
-            )
-            .output(
-            self.out_params.output_name,
-            vcodec=self.out_params.vcodec
-            )
-            .overwrite_output()
-            .global_args("-loglevel", "info")
-            .run_async(pipe_stdout=True, pipe_stderr=True, quiet=True)
+        # process = (
+        #     ffmpeg.input(
+        #     self.in_params.pattern, 
+        #     start_number = self.in_params.start_number,
+        #     # apply_trc ='iec61966_2_1',
+        #     # pix_fmt = 'yuv420p',
+        #     # filter_complex = "color=black,format=rgb24[c];[c][0]scale2ref[c][i];[c][i]overlay=format=auto:shortest=1,setsar=1"
+        #     )
+        #     .output(
+        #     self.out_params.output_name,
+        #     vcodec=self.out_params.vcodec
+        #     )
+        #     .overwrite_output()
+        #     .global_args("-pix_fmt", "yuv420p","-preset", "slow", "-crf", "10", "-c:a", "copy")
+        #     .run_async(pipe_stdout=True, pipe_stderr=True, quiet=True)
             
-        )
+        # )
         
+        process = Popen(["ffmpeg.exe", "-apply_trc", "iec61966_2_1","-i", self.in_params.pattern, *FFMpegPreset.H264(output=self.out_params.output_name)], stdout=PIPE, stderr=PIPE)
         buf = bytearray()
         exit = False
         while not exit:
+            # print(process)
             c = process.stderr.read(1)
             # print(buf.decode('utf-8'), flush=True)
             if c == b'':
+                print("breaking")
                 break
             if c.decode('utf-8') == '\r':
                 msg = buf.decode('utf-8')
