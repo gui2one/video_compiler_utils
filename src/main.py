@@ -7,7 +7,7 @@ from PySide2.QtGui import *
 
 from application_settings import ApplicationSettings
 from options_dialog import OptionsDialog
-from preset_chooser_widget import PresetsChooser
+from widgets.preset_chooser_widget import PresetsChooser
 from text_output_window import TextOutputWidget
 from confirm_dialog import ConfirmDialog
 from presets import FFMpegPreset, PRORES_profiles
@@ -108,15 +108,19 @@ class Window(QWidget):
                 
                 self.out_params = ffmpeg_output_params()
                 
+                self.cmd_args = []
                 if self.chooser.getCurrentIndex() == 0 :
                     self.out_params.output_name = output+"_H264.mp4"
                     self.out_params.vcodec = "libx264"
+                    self.cmd_args = FFMpegPreset.H264(quality=self.settings.getH264Quality())
                 elif self.chooser.getCurrentIndex() == 1 :
                     self.out_params.output_name = output+"_H265.mp4"
                     self.out_params.vcodec = "libx265"
+                    self.cmd_args = FFMpegPreset.H265()
                 elif self.chooser.getCurrentIndex() == 2 :
                     self.out_params.output_name = output+"_PRORES.mov"
                     self.out_params.vcodec = "prores"
+                    self.cmd_args = FFMpegPreset.ProRes()
                  
                  
                 if  os.path.exists(self.out_params.output_name) :            
@@ -138,7 +142,7 @@ class Window(QWidget):
         self.text_area.append(message.strip())   
         
     def onAcceptOverwrite(self):
-        self.ffmpeg_thread = FFMPEG_thread_V2(self.in_params, self.out_params)
+        self.ffmpeg_thread = FFMPEG_thread_V2(self.in_params, self.out_params, self.cmd_args)
         self.ffmpeg_thread.message_event.connect(self.on_ffmpeg_thread_message_2)
         self.ffmpeg_thread.start()
 

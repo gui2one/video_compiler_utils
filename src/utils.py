@@ -1,3 +1,4 @@
+from ast import arg
 from multiprocessing.connection import Pipe
 import os
 import re
@@ -26,11 +27,12 @@ class ffmpeg_output_params :
 
 class FFMPEG_thread_V2(QThread):
     message_event = Signal(str)
-    def __init__( self, input : ffmpeg_input_params, output : ffmpeg_output_params, parent = None ):
+    def __init__( self, input : ffmpeg_input_params, output : ffmpeg_output_params, args : list, parent = None ):
         
         super(FFMPEG_thread_V2, self).__init__(parent)
         self.in_params = input
         self.out_params = output
+        self.cmd_args = args
         
     def run(self):
         
@@ -59,7 +61,8 @@ class FFMPEG_thread_V2(QThread):
                 "ffmpeg.exe", "-y",
                 "-apply_trc", "iec61966_2_1",
                 "-i", self.in_params.pattern,
-                *FFMpegPreset.H264(output=self.out_params.output_name)
+                *self.cmd_args,
+                self.out_params.output_name
             ], 
             creationflags=DETACHED_PROCESS,
             stdout=PIPE, stderr=PIPE)

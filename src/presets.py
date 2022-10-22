@@ -19,7 +19,7 @@ class PRORES_quant_mats(Enum):
 class FFMpegPreset :
     
     @staticmethod
-    def H264(quality  : int = 10, output : str = "C:/output.mp4"):
+    def H264(quality  : int = 10):
         print("H264 preset")
         args = [
                     '-c:v', 'libx264', 
@@ -27,13 +27,11 @@ class FFMpegPreset :
                     '-crf', f'{quality}' ,
                     '-pix_fmt', 'yuv420p', 
                     '-filter_complex', "color=black,format=rgb24[c];[c][0]scale2ref[c][i];[c][i]overlay=format=auto:shortest=1,setsar=1",
-                    '-c:a', 'copy',
-                    
-                    f'{output}'
+                    '-c:a', 'copy'
                 ]  
         return args
     
-    def H265(quality  : int = 10, output : str = "output.mp4"):
+    def H265(quality  : int = 10):
         print("H265 preset")
         args = [
                     '-c:v', 'libx265', 
@@ -41,13 +39,11 @@ class FFMpegPreset :
                     '-crf', f'{quality}' ,
                     '-pix_fmt', f'yuv420p',    
                     '-filter_complex', "color=black,format=rgb24[c];[c][0]scale2ref[c][i];[c][i]overlay=format=auto:shortest=1,setsar=1",            
-                    '-c:a', 'copy',
-                    
-                    f'{output}'
+                    '-c:a', 'copy'
                 ]  
         return args
     
-    def ProRes(profile  : PRORES_profiles = PRORES_profiles.LT, output : str = "output.mp4"):
+    def ProRes(profile  : PRORES_profiles = PRORES_profiles.LT):
         
         """ from the docs
             profile -> integer
@@ -93,8 +89,6 @@ class FFMpegPreset :
                     '-profile:v', f'{profile.value}', 
                     '-quant_mat', f'{quant_mat.value}' ,
                     '-filter_complex', "color=black,format=rgb24[c];[c][0]scale2ref[c][i];[c][i]overlay=format=auto:shortest=1,setsar=1",
-                    '-c:a', 'copy',
-                    
-                    f'{output}'
+                    '-c:a', 'copy'
                 ]  
         return args

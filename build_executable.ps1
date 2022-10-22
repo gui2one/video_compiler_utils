@@ -5,6 +5,8 @@ try {
     Copy-Item ./src/style.qss ./dist/src/
     Remove-Item ./dist/VCU.exe 
     Rename-Item ./dist/main.exe VCU.exe
+
+    Invoke-Expression ./dist/VCU.exe
 }
 catch {}
  

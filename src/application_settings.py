@@ -44,5 +44,11 @@ class ApplicationSettings(QSettings):
         
     def getFFMPEGPath(self):
         return self.value("ffmpeg_path")    
+
+    def setH264Quality(self, path):
+        self.setValue("h264_quality", path)
+        
+    def getH264Quality(self):
+        return self.value("h264_quality")    
     
     
