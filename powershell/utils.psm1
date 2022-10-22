@@ -1,9 +1,20 @@
 function Print([string]$message) {
-    Write-Host "$message ... fucker !!!"
+    Write-Host "-----------------------------"
+    Write-Host "$message"
+    Write-Host "-----------------------------"
 }
 
 Export-ModuleMember -Function Print
 
+
+function CreateFolder([string]$folder_path){
+    if( Test-Path -Path $folder_path -PathType Container){
+        Print('Folder exists')
+    }else{
+        New-Item $folder_path -ItemType Directory
+    }
+}
+Export-ModuleMember -Function CreateFolder
 function RemoveFolderIfExists([string]$folder_path){
     if( Test-Path -Path $folder_path -PathType Container){
         Remove-Item $folder_path -Recurse -Force
