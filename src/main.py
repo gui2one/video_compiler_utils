@@ -53,17 +53,10 @@ class Window(QWidget):
         super(Window, self).__init__(parent=parent)
 
         self.settings = ApplicationSettings()
-
-
         self.setAcceptDrops(True)
-
-        
         self.initUI()
-        
 
-        last_path = self.settings.getLastVisitedPath()
-        
-        print(last_path)
+
         
     def initUI(self):
         layout = QVBoxLayout()
@@ -127,8 +120,7 @@ class Window(QWidget):
                     name = os.path.basename(self.out_params.output_name)
                     diag = ConfirmDialog(f"<div style='font-size : 16px;'><span style='font-weight :bold;color:red;'>{name}</span> already exist in this directory.<br><br> Overwrite ?<div>", self)
                     diag.accept.connect(self.onAcceptOverwrite)
-                    diag.exec_()
-                    # sys.exit(0)    
+                    diag.exec_()  
                     
                 else:
                     self.onAcceptOverwrite()

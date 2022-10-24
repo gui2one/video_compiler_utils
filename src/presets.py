@@ -1,6 +1,12 @@
 
 from enum import Enum
 import profile
+
+
+# ffmpeg -y -i paskshot_A/paskshot_A.%%04d.png -c:v libx265 -b:v 2600k -x265-params pass=1 -an -f null /dev/null && \
+# ffmpeg -y -i paskshot_A/paskshot_A.%%04d.png -c:v libx265 -b:v 2600k -x265-params pass=2 -c:a aac -b:a 128k output.mp4
+
+
 class PRORES_profiles(Enum):
     PROXY = 0
     LT = 1
@@ -20,7 +26,7 @@ class FFMpegCodecParams :
     
     @staticmethod
     def H264(quality  : int = 10):
-        print("H264 preset")
+        # print("H264 Codec")
         args = [
                     '-c:v', 'libx264', 
                     '-preset', 'slow', 
@@ -32,7 +38,7 @@ class FFMpegCodecParams :
         return args
     
     def H265(quality  : int = 10):
-        print("H265 preset")
+        # print("H265 Codec")
         args = [
                     '-c:v', 'libx265', 
                     '-preset', 'slow', 
