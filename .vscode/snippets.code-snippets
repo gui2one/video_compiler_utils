@@ -25,5 +25,22 @@
 			"from PySide2.QtGui import *"
 		],
 		"description": "Log output to console"
+	},
+
+	"QtDerive": {
+		"scope": "python",
+		"prefix": "qtd",
+		"body": [
+			"from PySide2.QtWidgets import *",
+			"from PySide2.QtCore import *",
+			"from PySide2.QtGui import *",
+			"",
+			"class $1($2):",
+			"\tdef __init__(self, parent=None):",
+			"\t\tsuper($1, self).__init__(parent)",
+			"\t\tpass"
+
+		],
+		"description": "Derive From Qt Base Class"
 	}
 }

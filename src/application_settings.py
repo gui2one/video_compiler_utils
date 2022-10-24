@@ -17,6 +17,11 @@ class ApplicationSettings(QSettings):
         if not self.value("last_path"):
             self.setValue("last_path", "")        
       
+        if not self.value("h264__crf") :
+            self.setValue("h264__crf", 15)
+            
+        if not self.value("h265__crf") :
+            self.setValue("h265__crf", 15)
         # if not self.boolValue("manager_window_maximized"):
         #     self.setValue("manager_window_maximized", False)        
         
@@ -45,10 +50,16 @@ class ApplicationSettings(QSettings):
     def getFFMPEGPath(self):
         return self.value("ffmpeg_path")    
 
-    def setH264Quality(self, path):
-        self.setValue("h264_quality", path)
+    def setH264_CRF(self, path):
+        self.setValue("h264__crf", path)
         
-    def getH264Quality(self):
-        return self.value("h264_quality")    
+    def getH264_CRF(self):
+        return self.value("h264__crf")    
+
+    def setH265_CRF(self, path):
+        self.setValue("h265__crf", path)
+        
+    def getH265_CRF(self):
+        return self.value("h265__crf")    
     
     

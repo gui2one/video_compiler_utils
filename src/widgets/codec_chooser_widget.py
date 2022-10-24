@@ -2,16 +2,16 @@ from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 
-class PresetsChooser(QWidget):
+class CodecChooser(QWidget):
     changed = Signal(int)
     def __init__(self, parent = None):
-        super(PresetsChooser, self).__init__(parent)
-        self.setObjectName("preset_chooser")
+        super(CodecChooser, self).__init__(parent)
+        self.setObjectName("codec_chooser")
         self.initUI()
     def initUI(self):
         layout = QHBoxLayout()
         
-        label = QLabel("Preset :")
+        label = QLabel("Codec :")
         layout.addWidget(label)
         
         self.combo = QComboBox()

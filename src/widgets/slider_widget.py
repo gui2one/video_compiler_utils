@@ -25,17 +25,17 @@ class SliderWidget(QWidget):
         v_layout.addWidget(label)
         
         v_layout.addLayout(h_layout)
-        slider = QSlider()
-        h_layout.addWidget(slider)
+        self.slider = QSlider()
+        h_layout.addWidget(self.slider)
         
         self.int_value = QLabel("val")
         self.int_value.setText(str(self.default))
         h_layout.addWidget(self.int_value)
-        slider.setOrientation(Qt.Orientation.Horizontal)
-        slider.setValue(self.default)
-        slider.setMinimum(self.min)
-        slider.setMaximum(self.max)
-        slider.valueChanged.connect(self.onChange)
+        self.slider.setOrientation(Qt.Orientation.Horizontal)
+        self.slider.setValue(self.default)
+        self.slider.setMinimum(self.min)
+        self.slider.setMaximum(self.max)
+        self.slider.valueChanged.connect(self.onChange)
         self.setLayout(v_layout)
 
     def onChange(self, value):

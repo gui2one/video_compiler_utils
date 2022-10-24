@@ -7,10 +7,10 @@ from PySide2.QtGui import *
 
 from application_settings import ApplicationSettings
 from options_dialog import OptionsDialog
-from widgets.preset_chooser_widget import PresetsChooser
+from widgets.codec_chooser_widget import CodecChooser
 from text_output_window import TextOutputWidget
 from confirm_dialog import ConfirmDialog
-from presets import FFMpegPreset, PRORES_profiles
+from presets import FFMpegCodecParams, PRORES_profiles
 
 from utils import (
     detect_file_sequence, 
@@ -74,7 +74,7 @@ class Window(QWidget):
         label.setObjectName("drop_label")
         layout.addWidget(label,alignment=Qt.AlignCenter)
         
-        self.chooser = PresetsChooser()
+        self.chooser = CodecChooser()
         layout.addWidget(self.chooser,alignment=Qt.AlignRight)
         self.chooser.changed.connect(lambda x : print(x))
 
@@ -112,15 +112,15 @@ class Window(QWidget):
                 if self.chooser.getCurrentIndex() == 0 :
                     self.out_params.output_name = output+"_H264.mp4"
                     self.out_params.vcodec = "libx264"
-                    self.cmd_args = FFMpegPreset.H264(quality=self.settings.getH264Quality())
+                    self.cmd_args = FFMpegCodecParams.H264(quality=self.settings.getH264_CRF())
                 elif self.chooser.getCurrentIndex() == 1 :
                     self.out_params.output_name = output+"_H265.mp4"
                     self.out_params.vcodec = "libx265"
-                    self.cmd_args = FFMpegPreset.H265()
+                    self.cmd_args = FFMpegCodecParams.H265(quality=self.settings.getH265_CRF())
                 elif self.chooser.getCurrentIndex() == 2 :
                     self.out_params.output_name = output+"_PRORES.mov"
                     self.out_params.vcodec = "prores"
-                    self.cmd_args = FFMpegPreset.ProRes()
+                    self.cmd_args = FFMpegCodecParams.ProRes()
                  
                  
                 if  os.path.exists(self.out_params.output_name) :            

@@ -12,7 +12,7 @@ from PySide2.QtGui import *
 from application_settings import ApplicationSettings
 
 
-from presets import FFMpegPreset
+from presets import FFMpegCodecParams
 
 class ffmpeg_input_params :
     pattern : str

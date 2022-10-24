@@ -16,7 +16,7 @@ class PRORES_quant_mats(Enum):
     LT = 3
     STANDARD = 4
     HQ = 5
-class FFMpegPreset :
+class FFMpegCodecParams :
     
     @staticmethod
     def H264(quality  : int = 10):
