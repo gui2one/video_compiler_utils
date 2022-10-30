@@ -94,6 +94,7 @@ class FFMPEG_thread_V2(QThread):
             [
                 f"{get_ffmpeg_path()}/ffmpeg.exe", "-y",
                 "-apply_trc", "iec61966_2_1",
+                "-start_number", f"{self.in_params.start_number}",
                 "-i", self.in_params.pattern,
                 *self.cmd_args,
                 self.out_params.output_name
