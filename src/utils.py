@@ -69,8 +69,7 @@ class FFMPEG_thread_V2(QThread):
         
         
     def run(self):
-        
-        print(f'PATH to ffmpeg : {get_ffmpeg_path()}')
+
         """ 
             bt709                        .D.V.... BT.709
             gamma                        .D.V.... gamma
