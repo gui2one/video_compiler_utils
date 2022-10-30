@@ -6,6 +6,7 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 
 from application_settings import ApplicationSettings
+from ffmpeg_version_infos_dialog import FFMpegVersionInfosDialog
 from file_sequence_detector import FileSequenceDetector
 from options_dialog import OptionsDialog
 from widgets.codec_chooser_widget import CodecChooser
@@ -30,13 +31,17 @@ class MainWindow(QMainWindow) :
         self.window = Window(self)
         self.setCentralWidget(self.window)
         self.options_dialog = OptionsDialog()
+        self.ffmpeg_verion_infos_dialog = FFMpegVersionInfosDialog()
 
         
-        option_menu = self.menuBar().addMenu("Options")
+        misc_menu = self.menuBar().addMenu("Misc")
         
         action1 = QAction("display options", self)
         action1.triggered.connect(self.displayOptionsDialog)
-        option_menu.addAction(action1)
+        misc_menu.addAction(action1)
+        action2 = QAction("ffmpeg version infos", self)
+        action2.triggered.connect(self.displayFFMpegVersionInfos)
+        misc_menu.addAction(action2)
         self.show()
         
     def closeEvent(self, event: QCloseEvent) -> None:
@@ -46,6 +51,9 @@ class MainWindow(QMainWindow) :
     def displayOptionsDialog(self):
         self.options_dialog.exec_()
         pass
+    
+    def displayFFMpegVersionInfos(self):
+        self.ffmpeg_verion_infos_dialog.exec_()
     
 class Window(QWidget):
 
@@ -143,16 +151,14 @@ class Window(QWidget):
                     self.onAcceptOverwrite()
                              
 
-            
-    def on_ffmpeg_thread_message(self, message):  
-        self.text_area.append(message.strip())   
+             
 
-    def on_ffmpeg_thread_message_2(self, message):  
+    def on_ffmpeg_thread_message(self, message):  
         self.text_area.append(message.strip())   
         
     def onAcceptOverwrite(self):
         self.ffmpeg_thread = FFMPEG_thread_V2(self.in_params, self.out_params, self.cmd_args)
-        self.ffmpeg_thread.message_event.connect(self.on_ffmpeg_thread_message_2)
+        self.ffmpeg_thread.message_event.connect(self.on_ffmpeg_thread_message)
         self.ffmpeg_thread.start()
 
 app = QApplication([])

@@ -3,7 +3,7 @@ from multiprocessing.connection import Pipe
 import os
 import re
 import sys
-from subprocess import DETACHED_PROCESS, Popen, PIPE, STDOUT, call
+from subprocess import DETACHED_PROCESS, Popen, PIPE, STDOUT, call, check_output
 
 
 from PySide2.QtWidgets import *
@@ -24,24 +24,6 @@ class ffmpeg_input_params :
 class ffmpeg_output_params :
     output_name : str
     vcodec : str
-    
-def add_ffmpeg_to_path():
-
-    ffmpeg_dir = ""
-    if getattr(sys, 'frozen', False):
-        root_dir = os.path.dirname(sys.executable)
-        ffmpeg_dir = os.path.join(root_dir, "3rd-party\\ffmpeg\\bin")
-        
-
-    # or a script file (e.g. `.py` / `.pyw`)
-    elif __file__:
-        root_dir = os.path.dirname(__file__)   
-          
-        ffmpeg_dir = os.path.abspath(os.path.join(root_dir, "..", "3rd-party\\ffmpeg\\bin"))
-        
-    sys.path.append(ffmpeg_dir)
-    logger.info(f'FFMPEG DIR : {ffmpeg_dir}')
-
 
 def get_ffmpeg_path():
     ffmpeg_dir = ""
@@ -57,6 +39,16 @@ def get_ffmpeg_path():
         ffmpeg_dir = os.path.abspath(os.path.join(root_dir, "..", "3rd-party\\ffmpeg\\bin"))
 
     return ffmpeg_dir
+
+def get_ffmpeg_version() -> str:
+    
+    cmd = f'{get_ffmpeg_path()}/ffmpeg.exe -version'
+    output = check_output(cmd)
+    if output:
+        return output.decode("utf-8")
+    else : 
+        return "couldn't find ffmpeg version ..."
+
 class FFMPEG_thread_V2(QThread):
     message_event = Signal(str)
     def __init__( self, input : ffmpeg_input_params, output : ffmpeg_output_params, args : list, parent = None ):
@@ -92,6 +84,7 @@ class FFMPEG_thread_V2(QThread):
         process = Popen(
             [
                 f"{get_ffmpeg_path()}/ffmpeg.exe", "-y",
+                "-hide_banner", "-loglevel", "error", "-stats",
                 "-apply_trc", "iec61966_2_1",
                 "-start_number", f"{self.in_params.start_number}",
                 "-i", self.in_params.pattern,
