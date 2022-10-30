@@ -26,7 +26,7 @@ class FFMpegCodecParams :
     
     @staticmethod
     def H264(quality  : int = 10):
-        # print("H264 Codec")
+
         args = [
                     '-c:v', 'libx264', 
                     '-preset', 'slow', 
@@ -38,7 +38,7 @@ class FFMpegCodecParams :
         return args
     
     def H265(quality  : int = 10):
-        # print("H265 Codec")
+
         args = [
                     '-c:v', 'libx265', 
                     '-preset', 'slow', 

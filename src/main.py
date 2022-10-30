@@ -6,6 +6,7 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 
 from application_settings import ApplicationSettings
+from file_sequence_detector import FileSequenceDetector
 from options_dialog import OptionsDialog
 from widgets.codec_chooser_widget import CodecChooser
 from text_output_window import TextOutputWidget
@@ -13,21 +14,16 @@ from confirm_dialog import ConfirmDialog
 from presets import FFMpegCodecParams, PRORES_profiles
 
 from utils import (
-    get_ffmpeg_path,
-    detect_file_sequence, 
     FFMPEG_thread_V2, 
     ffmpeg_input_params, 
     ffmpeg_output_params
 )
 
-get_ffmpeg_path()
+
 class MainWindow(QMainWindow) :
    
     def __init__(self) -> None:
         super(MainWindow, self).__init__()
-        
-        
-        print(sys.path)
         
         self.setGeometry(500,200, 1024, 512)
         self.setWindowTitle("VCU - Video Compiler Utils - v0.0.1a")
@@ -89,13 +85,28 @@ class Window(QWidget):
         
     def dropEvent(self, event):
 
-        # ffmpeg_path = self.settings.getFFMPEGPath()
         if event.mimeData().hasUrls() :
+            
+            detector = FileSequenceDetector()
             url :QUrl = event.mimeData().urls()[0]
             good_path = url.toLocalFile()
             dir_name = os.path.basename(good_path)
             output = os.path.join(os.path.dirname(good_path), f"{dir_name}")
-            pattern, start_frame, num_frames = detect_file_sequence(good_path)
+            
+            pattern = None
+            start_frame = None
+            num_frames = None
+
+            
+            detector.detect_file_sequences(good_path)
+            detector.print()
+            
+            if len(detector.sequences) > 0 :
+                seq = detector.sequences[0]
+                pattern = os.path.join(good_path, seq.name_pattern)
+                start_frame = seq.start_number
+                num_frames = seq.num_files
+            
             
             
             if pattern != None:
