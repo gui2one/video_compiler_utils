@@ -4,4 +4,5 @@ build/
 build/main/
 dist/
 dist/**
+3rd-party/
 **/__pycache__/**

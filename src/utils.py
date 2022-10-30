@@ -2,7 +2,7 @@ from ast import arg
 from multiprocessing.connection import Pipe
 import os
 import re
-
+import sys
 from subprocess import DETACHED_PROCESS, Popen, PIPE, STDOUT, call
 
 
@@ -14,6 +14,8 @@ from application_settings import ApplicationSettings
 
 from presets import FFMpegCodecParams
 
+from logger import logger
+
 class ffmpeg_input_params :
     pattern : str
     start_number : int
@@ -23,8 +25,38 @@ class ffmpeg_output_params :
     output_name : str
     vcodec : str
     
+def add_ffmpeg_to_path():
+
+    ffmpeg_dir = ""
+    if getattr(sys, 'frozen', False):
+        root_dir = os.path.dirname(sys.executable)
+        ffmpeg_dir = os.path.join(root_dir, "3rd-party\\ffmpeg\\bin")
+        
+
+    # or a script file (e.g. `.py` / `.pyw`)
+    elif __file__:
+        root_dir = os.path.dirname(__file__)   
+          
+        ffmpeg_dir = os.path.abspath(os.path.join(root_dir, "..", "3rd-party\\ffmpeg\\bin"))
+        
+    sys.path.append(ffmpeg_dir)
+    logger.info(f'FFMPEG DIR : {ffmpeg_dir}')
 
 
+def get_ffmpeg_path():
+    ffmpeg_dir = ""
+    if getattr(sys, 'frozen', False):
+        root_dir = os.path.dirname(sys.executable)
+        ffmpeg_dir = os.path.join(root_dir, "3rd-party\\ffmpeg\\bin")
+        
+
+    # or a script file (e.g. `.py` / `.pyw`)
+    elif __file__:
+        root_dir = os.path.dirname(__file__)   
+          
+        ffmpeg_dir = os.path.abspath(os.path.join(root_dir, "..", "3rd-party\\ffmpeg\\bin"))
+
+    return ffmpeg_dir
 class FFMPEG_thread_V2(QThread):
     message_event = Signal(str)
     def __init__( self, input : ffmpeg_input_params, output : ffmpeg_output_params, args : list, parent = None ):
@@ -34,9 +66,11 @@ class FFMPEG_thread_V2(QThread):
         self.out_params = output
         self.cmd_args = args
         
+        
+        
     def run(self):
         
-        
+        print(f'PATH to ffmpeg : {get_ffmpeg_path()}')
         """ 
             bt709                        .D.V.... BT.709
             gamma                        .D.V.... gamma
@@ -58,7 +92,7 @@ class FFMPEG_thread_V2(QThread):
         
         process = Popen(
             [
-                "ffmpeg.exe", "-y",
+                f"{get_ffmpeg_path()}/ffmpeg.exe", "-y",
                 "-apply_trc", "iec61966_2_1",
                 "-i", self.in_params.pattern,
                 *self.cmd_args,
@@ -89,8 +123,6 @@ class FFMPEG_thread_V2(QThread):
     def exit(self) -> None:
         # print("Thread EXIT")
         return super().exit()  
-    
-
     
 def detect_file_sequence(dir_path):
     if os.path.isdir(dir_path):

@@ -13,15 +13,21 @@ from confirm_dialog import ConfirmDialog
 from presets import FFMpegCodecParams, PRORES_profiles
 
 from utils import (
+    get_ffmpeg_path,
     detect_file_sequence, 
     FFMPEG_thread_V2, 
     ffmpeg_input_params, 
     ffmpeg_output_params
 )
+
+get_ffmpeg_path()
 class MainWindow(QMainWindow) :
    
     def __init__(self) -> None:
         super(MainWindow, self).__init__()
+        
+        
+        print(sys.path)
         
         self.setGeometry(500,200, 1024, 512)
         self.setWindowTitle("VCU - Video Compiler Utils - v0.0.1a")
@@ -30,7 +36,7 @@ class MainWindow(QMainWindow) :
         self.options_dialog = OptionsDialog()
 
         
-        option_menu = self.menuBar().addMenu("Option")
+        option_menu = self.menuBar().addMenu("Options")
         
         action1 = QAction("display options", self)
         action1.triggered.connect(self.displayOptionsDialog)

@@ -23,10 +23,6 @@ class OptionsDialog(QDialog):
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignTop | Qt.AlignLeft)
 
-        self.option1 = LineEdit(self.settings.getFFMPEGPath())
-        layout.addWidget(self.option1)
-        
-        self.option1.textChanged.connect(lambda value : self.settings.setFFMPEGPath(value))
 
         self.H264_quality = SliderWidget("H264 CRF (lower is better)", 31, 0, 61)
         self.H264_quality.slider.setValue(int(self.settings.getH264_CRF()))
