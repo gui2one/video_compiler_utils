@@ -22,6 +22,9 @@ class ApplicationSettings(QSettings):
             
         if not self.value("h265__crf") :
             self.setValue("h265__crf", 15)
+
+        if not self.value("global__fps") :
+            self.setValue("global__fps", 25)
         # if not self.boolValue("manager_window_maximized"):
         #     self.setValue("manager_window_maximized", False)        
         
@@ -61,5 +64,11 @@ class ApplicationSettings(QSettings):
         
     def getH265_CRF(self):
         return self.value("h265__crf")    
+
+    def setGlobal_FPS(self, value):
+        self.setValue("global__fps", value)
+        
+    def getGlobal_FPS(self):
+        return self.value("global__fps")    
     
     

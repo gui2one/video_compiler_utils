@@ -57,6 +57,7 @@ class FFMPEG_thread_V2(QThread):
         self.in_params = input
         self.out_params = output
         self.cmd_args = args
+        self.settings = ApplicationSettings()
         
         
         
@@ -81,14 +82,16 @@ class FFMPEG_thread_V2(QThread):
             smpte428_1                   .D.V.... SMPTE ST 428-1
         """
         
+        global_fps = self.settings.getGlobal_FPS()
         process = Popen(
             [
                 f"{get_ffmpeg_path()}/ffmpeg.exe", "-y",
                 "-hide_banner", "-loglevel", "error", "-stats",
                 "-apply_trc", "iec61966_2_1",
                 "-start_number", f"{self.in_params.start_number}",
+                "-r", f"{global_fps}", 
                 "-i", self.in_params.pattern,
-                *self.cmd_args,
+                *self.cmd_args, "-r", f"{global_fps}",
                 self.out_params.output_name
             ], 
             creationflags=DETACHED_PROCESS,

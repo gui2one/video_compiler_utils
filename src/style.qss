@@ -23,11 +23,15 @@ QTextEdit#text_area  a:hover{
 
     font-size : 20px;
 }
-#preset_chooser QComboBox{
+#codec_chooser QComboBox, 
+#codec_chooser QSpinBox, 
+#codec_chooser QLabel{
 
     font-size : 20px;
-
+    /* border : 1px solid red; */
 }
+
+
 /* 
 QAbstractItemView{
     -webkit-background-composite: red;

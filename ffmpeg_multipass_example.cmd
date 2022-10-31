@@ -1,0 +1,2 @@
+ffmpeg -y -i paskshot_A/paskshot_A.%%04d.png -c:v libx265 -b:v 2600k -x265-params pass=1 -an -f null /dev/null && \
+ffmpeg -y -i paskshot_A/paskshot_A.%%04d.png -c:v libx265 -b:v 2600k -x265-params pass=2 -c:a aac -b:a 128k output.mp4

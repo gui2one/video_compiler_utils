@@ -1,3 +1,4 @@
+from ctypes import alignment
 import os
 import sys
 from typing import Text
@@ -19,6 +20,7 @@ from utils import (
     ffmpeg_input_params, 
     ffmpeg_output_params
 )
+from widgets.int_param import IntParam
 
 
 class MainWindow(QMainWindow) :
@@ -77,9 +79,23 @@ class Window(QWidget):
         label.setObjectName("drop_label")
         layout.addWidget(label,alignment=Qt.AlignCenter)
         
+        hbox = QHBoxLayout()
+        layout.addLayout(hbox)
+        hbox.setSpacing(0)
+        hbox.setAlignment(Qt.AlignRight)
+
+        
         self.chooser = CodecChooser()
-        layout.addWidget(self.chooser,alignment=Qt.AlignRight)
+        self.chooser.setMaximumWidth(250)
+        hbox.addWidget(self.chooser, 0, alignment=Qt.AlignRight)
         self.chooser.changed.connect(lambda x : print(x))
+        
+        
+        rate_label = IntParam("fps", self.settings.getGlobal_FPS())
+        rate_label.setMaximumWidth(100)
+        rate_label.setObjectName("codec_chooser")
+        rate_label.value_changed.connect(self.onRateChange)
+        hbox.addWidget(rate_label, 0, alignment=Qt.AlignRight)        
 
         self.text_area = TextOutputWidget()
         self.text_area.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
@@ -160,6 +176,10 @@ class Window(QWidget):
         self.ffmpeg_thread = FFMPEG_thread_V2(self.in_params, self.out_params, self.cmd_args)
         self.ffmpeg_thread.message_event.connect(self.on_ffmpeg_thread_message)
         self.ffmpeg_thread.start()
+        
+    def onRateChange(self, value):
+        print(value)
+        self.settings.setGlobal_FPS(value)
 
 app = QApplication([])
 
