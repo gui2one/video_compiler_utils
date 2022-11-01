@@ -30,6 +30,8 @@ class MainWindow(QMainWindow) :
         
         self.setGeometry(500,200, 1024, 512)
         self.setWindowTitle("VCU - Video Compiler Utils - v0.0.1a")
+        
+        self.setWindowIcon(QIcon("VCU_logo_01.ico"))        
         self.window = Window(self)
         self.setCentralWidget(self.window)
         self.options_dialog = OptionsDialog()
@@ -66,6 +68,7 @@ class Window(QWidget):
 
         self.settings = ApplicationSettings()
         self.setAcceptDrops(True)
+
         self.initUI()
 
 
@@ -142,17 +145,18 @@ class Window(QWidget):
                 
                 self.out_params = ffmpeg_output_params()
                 
+                fps = self.settings.getGlobal_FPS()
                 self.cmd_args = []
                 if self.chooser.getCurrentIndex() == 0 :
-                    self.out_params.output_name = output+"_H264.mp4"
+                    self.out_params.output_name = output+f"_H264_{fps}fps.mp4"
                     self.out_params.vcodec = "libx264"
                     self.cmd_args = FFMpegCodecParams.H264(quality=self.settings.getH264_CRF())
                 elif self.chooser.getCurrentIndex() == 1 :
-                    self.out_params.output_name = output+"_H265.mp4"
+                    self.out_params.output_name = output+f"_H265_{fps}fps.mp4"
                     self.out_params.vcodec = "libx265"
                     self.cmd_args = FFMpegCodecParams.H265(quality=self.settings.getH265_CRF())
                 elif self.chooser.getCurrentIndex() == 2 :
-                    self.out_params.output_name = output+"_PRORES.mov"
+                    self.out_params.output_name = output+f"_PRORES_{fps}fps.mov"
                     self.out_params.vcodec = "prores"
                     self.cmd_args = FFMpegCodecParams.ProRes()
                  
