@@ -1,6 +1,9 @@
 $exe = "vcu.exe"
 $icon = "VCU_logo_01.ico"
 Import-Module $PSScriptRoot/powershell/utils.psm1
+
+python ./versioning.py
+
 $ffmpeg_local_dir = "C:/gui2one/ffmpeg"
 pyinstaller --onedir `
     --noconfirm `

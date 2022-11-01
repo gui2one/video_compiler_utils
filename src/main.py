@@ -22,6 +22,7 @@ from utils import (
 )
 from widgets.int_param import IntParam
 
+from version_infos import VCU_VER_MAJOR, VCU_VER_MINOR, VCU_VER_REVISION
 
 class MainWindow(QMainWindow) :
    
@@ -29,9 +30,9 @@ class MainWindow(QMainWindow) :
         super(MainWindow, self).__init__()
         
         self.setGeometry(500,200, 1024, 512)
-        self.setWindowTitle("VCU - Video Compiler Utils - v0.0.1a")
+        self.setWindowTitle(f"VCU - Video Compiler Utils - v{VCU_VER_MAJOR}.{VCU_VER_MINOR}.{VCU_VER_REVISION}a")
         
-        self.setWindowIcon(QIcon("VCU_logo_01.ico"))        
+        self.setWindowIcon(QIcon("src/VCU_logo_01.ico"))        
         self.window = Window(self)
         self.setCentralWidget(self.window)
         self.options_dialog = OptionsDialog()
