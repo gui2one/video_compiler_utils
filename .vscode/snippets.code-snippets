@@ -38,7 +38,15 @@
 			"class $1($2):",
 			"\tdef __init__(self, parent=None):",
 			"\t\tsuper($1, self).__init__(parent)",
-			"\t\tpass"
+			"\t\tself.initUI()",
+			"\t\tpass",
+			"\n\n",
+
+			"\tdef initUI(self):",
+			"\t\tlayout = QVBoxLayout()",
+			"\t\tself.setLayout(layout)",
+			"\t\tlabel = QLabel('New Widget')",
+			"\t\tlayout.addWidget(label)",
 
 		],
 		"description": "Derive From Qt Base Class"

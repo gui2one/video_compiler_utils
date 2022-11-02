@@ -32,6 +32,10 @@ QTextEdit#text_area  a:hover{
 }
 
 
+#image_sequence QLabel{
+    border : 1px solid green;
+}
+
 /* 
 QAbstractItemView{
     -webkit-background-composite: red;

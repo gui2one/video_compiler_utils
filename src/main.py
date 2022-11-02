@@ -14,8 +14,9 @@ from widgets.codec_chooser_widget import CodecChooser
 from text_output_window import TextOutputWidget
 from confirm_dialog import ConfirmDialog
 from presets import FFMpegCodecParams, PRORES_profiles
-
+import data_base
 from widgets.sequences_list import SequencesList
+from widgets.ImageSequenceItem import ImageSequenceItem
 from utils import (
     FFMPEG_thread_V2, 
     ffmpeg_input_params, 
@@ -112,9 +113,10 @@ class Window(QWidget):
         
         splitter.addWidget(self.text_area)
         
-        
+        scroll_area = QScrollArea()
+        splitter.addWidget(scroll_area)
         seq_list = SequencesList()
-        splitter.addWidget(seq_list)
+        scroll_area.setWidget(seq_list)
         
     def dragEnterEvent(self, event):
 
@@ -122,6 +124,7 @@ class Window(QWidget):
         
     def dropEvent(self, event):
 
+        data_base.addItem(ImageSequenceItem())
         if event.mimeData().hasUrls() :
             
             detector = FileSequenceDetector()

@@ -25,6 +25,9 @@ class ApplicationSettings(QSettings):
 
         if not self.value("global__fps") :
             self.setValue("global__fps", 25)
+
+        if not self.value("database_path") :
+            self.setValue("database_path", "database.db")
         # if not self.boolValue("manager_window_maximized"):
         #     self.setValue("manager_window_maximized", False)        
         
