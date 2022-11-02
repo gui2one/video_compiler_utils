@@ -15,6 +15,7 @@ from text_output_window import TextOutputWidget
 from confirm_dialog import ConfirmDialog
 from presets import FFMpegCodecParams, PRORES_profiles
 
+from widgets.sequences_list import SequencesList
 from utils import (
     FFMPEG_thread_V2, 
     ffmpeg_input_params, 
@@ -77,10 +78,11 @@ class Window(QWidget):
     def initUI(self):
         layout = QVBoxLayout()
         self.setLayout(layout)
-        
+        # layout.setSizeConstraint(QLayout.SetMinimumSize)
         label = QLabel("Drop a folder Here")
-        label.setScaledContents(True)
+        # label.setScaledContents(True)
         label.setObjectName("drop_label")
+
         layout.addWidget(label,alignment=Qt.AlignCenter)
         
         hbox = QHBoxLayout()
@@ -88,24 +90,31 @@ class Window(QWidget):
         hbox.setSpacing(0)
         hbox.setAlignment(Qt.AlignRight)
 
-        
         self.chooser = CodecChooser()
-        self.chooser.setMaximumWidth(250)
         hbox.addWidget(self.chooser, 0, alignment=Qt.AlignRight)
         self.chooser.changed.connect(lambda x : print(x))
         
         
         rate_label = IntParam("fps", self.settings.getGlobal_FPS())
-        rate_label.setMaximumWidth(100)
         rate_label.setObjectName("codec_chooser")
         rate_label.value_changed.connect(self.onRateChange)
         hbox.addWidget(rate_label, 0, alignment=Qt.AlignRight)        
 
+
+        splitter = QSplitter()
+        splitter.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        layout.addWidget(splitter)        
+        
         self.text_area = TextOutputWidget()
         self.text_area.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
         self.text_area.setReadOnly(True)
         self.text_area.setAcceptRichText(True)
-        layout.addWidget(self.text_area)        
+        
+        splitter.addWidget(self.text_area)
+        
+        
+        seq_list = SequencesList()
+        splitter.addWidget(seq_list)
         
     def dragEnterEvent(self, event):
 
