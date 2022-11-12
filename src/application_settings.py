@@ -17,6 +17,15 @@ class ApplicationSettings(QSettings):
         if not self.value("last_path"):
             self.setValue("last_path", "")        
       
+        if not self.value("window_position"):
+            self.setValue("window_position", QPoint(200,200))        
+      
+        if not self.value("window_size"):
+            self.setValue("window_size", QSize(1280,720))        
+      
+        if not self.boolValue("window_maximized"):
+            self.setValue("window_maximized", False)        
+      
         if not self.value("h264__crf") :
             self.setValue("h264__crf", 15)
             
@@ -28,8 +37,6 @@ class ApplicationSettings(QSettings):
 
         if not self.value("database_path") :
             self.setValue("database_path", "database.db")
-        # if not self.boolValue("manager_window_maximized"):
-        #     self.setValue("manager_window_maximized", False)        
         
     def value(self, property_name : str) -> any:
         try :
@@ -49,7 +56,25 @@ class ApplicationSettings(QSettings):
         
     def getLastVisitedPath(self):
         return self.value("last_path")
+
+    def setWindowPosition(self, pos : QPoint):
+        self.setValue("window_position", pos)
+
+    def getWindowPosition(self):
+        return self.value("window_position")
+
+    def setWindowSize(self, size : QSize):
+        self.setValue("window_size", size)
+        
+    def getWindowSize(self):
+        return self.value("window_size")
     
+    def getWindowMaximized(self):
+        return self.boolValue("window_maximized")
+    
+    def setWindowMaximized(self, value : bool) :
+        self.setValue("window_maximized", value)
+        
     def setFFMPEGPath(self, path):
         self.setValue("ffmpeg_path", path)
         

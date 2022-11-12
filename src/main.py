@@ -30,8 +30,14 @@ class MainWindow(QMainWindow) :
    
     def __init__(self) -> None:
         super(MainWindow, self).__init__()
-        
-        self.setGeometry(500,200, 1024, 512)
+        self.settings = ApplicationSettings()
+        win_pos : QPoint = self.settings.getWindowPosition()
+        win_size : QSize = self.settings.getWindowSize()
+        maximized : bool = self.settings.getWindowMaximized()
+        self.setGeometry(win_pos.x(),win_pos.y(), win_size.width(), win_size.height())
+        self.move(win_pos)
+        if maximized :
+            self.showMaximized()
         self.setWindowTitle(f"VCU - Video Compiler Utils - v{VCU_VER_MAJOR}.{VCU_VER_MINOR}.{VCU_VER_REVISION}a")
         
         self.setWindowIcon(QIcon("src/VCU_logo_01.ico"))        
@@ -52,7 +58,9 @@ class MainWindow(QMainWindow) :
         self.show()
         
     def closeEvent(self, event: QCloseEvent) -> None:
-
+        self.settings.setWindowPosition(self.pos())
+        self.settings.setWindowSize(self.size())
+        self.settings.setWindowMaximized(self.isMaximized())
         return super().closeEvent(event)
     
     def displayOptionsDialog(self):
