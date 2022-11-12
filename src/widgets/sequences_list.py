@@ -2,7 +2,6 @@ from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 
-import sqlite3
 from widgets.ImageSequenceItem  import ImageSequenceItem 
 
 class SequencesList(QFrame):

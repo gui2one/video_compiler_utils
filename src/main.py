@@ -14,7 +14,7 @@ from widgets.codec_chooser_widget import CodecChooser
 from text_output_window import TextOutputWidget
 from confirm_dialog import ConfirmDialog
 from presets import FFMpegCodecParams, PRORES_profiles
-import data_base
+
 from widgets.sequences_list import SequencesList
 from widgets.ImageSequenceItem import ImageSequenceItem
 from utils import (
@@ -25,6 +25,9 @@ from utils import (
 from widgets.int_param import IntParam
 from widgets.ScrollArea import ScrollArea
 from version_infos import VCU_VER_MAJOR, VCU_VER_MINOR, VCU_VER_REVISION
+
+
+import data_base
 
 class MainWindow(QMainWindow) :
    
