@@ -31,11 +31,18 @@ QTextEdit#text_area  a:hover{
     /* border : 1px solid red; */
 }
 
-
-#image_sequence QLabel{
-    border : 1px solid green;
+#SequencesList__scroll_area{
+}
+#SequenceList{
 }
 
+#ImageSequenceItem {
+    background-color: darkolivegreen;
+    border-radius: 3px;
+}
+#ImageSequenceItem *{
+    background-color : darkolivegreen;
+}
 /* 
 QAbstractItemView{
     -webkit-background-composite: red;

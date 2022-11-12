@@ -23,7 +23,7 @@ from utils import (
     ffmpeg_output_params
 )
 from widgets.int_param import IntParam
-
+from widgets.ScrollArea import ScrollArea
 from version_infos import VCU_VER_MAJOR, VCU_VER_MINOR, VCU_VER_REVISION
 
 class MainWindow(QMainWindow) :
@@ -121,11 +121,21 @@ class Window(QWidget):
         
         splitter.addWidget(self.text_area)
         
-        scroll_area = QScrollArea()
-        splitter.addWidget(scroll_area)
-        seq_list = SequencesList()
-        scroll_area.setWidget(seq_list)
+        self.scroll_area = ScrollArea()
+        self.scroll_area.setObjectName("SequencesList__scroll_area")
+        splitter.addWidget(self.scroll_area)
+        self.seq_list = SequencesList()
+        self.seq_list.setFixedWidth(self.scroll_area.width())
+        self.scroll_area.setWidget(self.seq_list)
         
+        self.scroll_area.resized.connect(self.onScrollAreaResize)
+        
+    def onScrollAreaResize(self, size : QSize):
+        offset = 0
+        if self.scroll_area.verticalScrollBar().isVisible():
+            offset = 10
+        self.seq_list.setFixedWidth( size.width()-offset-2)
+        pass
     def dragEnterEvent(self, event):
 
         event.acceptProposedAction()
