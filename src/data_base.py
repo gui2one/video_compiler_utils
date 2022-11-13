@@ -1,12 +1,12 @@
 import sqlite3
 from datetime import datetime
 import string
-
+import json
 from typing import List
 
 
 from application_settings import ApplicationSettings
-
+from widgets.ImageSequenceItem import ImageSequenceItem
 settings = ApplicationSettings()
 DB_FILE = settings.value("database_path")
 
@@ -23,7 +23,7 @@ def initDB():
 
     conn.close()
 
-def addItem(item):
+def addItem(item : ImageSequenceItem):
     initDB()
     conn = sqlite3.connect(DB_FILE)
     cur = conn.cursor()
@@ -46,37 +46,41 @@ def readItems() -> List[any]:
     rows = cur.fetchall()
 
     conn.close()
-    jobs : List[any] = []
+    items : List[ImageSequenceItem] = []
 
     for row in rows:
 
-        db_id = row[0]
-        time_stamp = row[1]
+        db_id = int(row[0])
+        time_stamp = float(row[1])
         json_str = row[2]
-        # j  = Job()
-        # j.fromJSON(json_str)
-        # j.id = int(db_id)
-        # j.time_stamp = time_stamp
-        # jobs.append(j)
+        # print(json_str)
+        json_data = json.loads(json_str)
+        j  = ImageSequenceItem(json_data["root_dir"], json_data["file_pattern"], db_id)
+        j.fromJSON(json_data)
+        j.id = int(db_id)
+        j.time_stamp = time_stamp
+        print(json_data)
+        items.append(j)
 
-    return jobs
+    return items
 
-def deleteJob(id):
+def deleteItem(id: int):
     initDB()
     conn = sqlite3.connect(DB_FILE)
     cur = conn.cursor()    
 
-    cur.execute("DELETE FROM jobs WHERE id=?", (id,))
+    cur.execute("DELETE FROM sequences WHERE id=?", (id,))
 
     conn.commit()
     conn.close()
 
-def updateJob(job : any):
+
+def updateItem(seq : ImageSequenceItem):
     initDB()
     conn = sqlite3.connect(DB_FILE)
     cur = conn.cursor()  
-    json_string = job.toJSON()
-    cur.execute("""UPDATE jobs SET data = ? where id = ?""", [json_string, job.id])
+    json_string = seq.toJSON()
+    cur.execute("""UPDATE sequences SET data = ? where id = ?""", [json_string, seq.id])
 
     conn.commit()
 

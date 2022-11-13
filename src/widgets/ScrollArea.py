@@ -14,4 +14,10 @@ class ScrollArea(QScrollArea):
     def resizeEvent(self, arg__1: QResizeEvent) -> None:
         self.resized.emit(self.size())
         return super().resizeEvent(arg__1)
+    
+    def getWidth(self) -> int :
+        w = self.width()
+        if self.verticalScrollBar().isVisible() :
+            w += 10
+        return w
 

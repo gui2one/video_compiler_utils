@@ -31,17 +31,30 @@ QTextEdit#text_area  a:hover{
     /* border : 1px solid red; */
 }
 
+QPushButton#delete_btn{
+    border : 0px;
+}
+QPushButton#delete_btn:hover{
+    border : 1px solid white;
+}
+
 #SequencesList__scroll_area{
 }
 #SequenceList{
 }
 
 #ImageSequenceItem {
+    
     background-color: darkolivegreen;
     border-radius: 3px;
+    border : 1px solid white;
 }
 #ImageSequenceItem *{
     background-color : darkolivegreen;
+}
+
+#ImageSequenceItem QLabel {
+    /* border : 1px solid red; */
 }
 /* 
 QAbstractItemView{

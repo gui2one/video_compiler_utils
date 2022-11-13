@@ -31,6 +31,7 @@ import data_base
 
 class MainWindow(QMainWindow) :
    
+
     def __init__(self) -> None:
         super(MainWindow, self).__init__()
         self.settings = ApplicationSettings()
@@ -76,6 +77,7 @@ class MainWindow(QMainWindow) :
 class Window(QWidget):
 
     ffmpeg_thread : FFMPEG_thread_V2
+    pending_sequence : ImageSequenceItem
     # text_output : TextOutputWidget
     def __init__(self, parent) :
         super(Window, self).__init__(parent=parent)
@@ -84,6 +86,8 @@ class Window(QWidget):
         self.setAcceptDrops(True)
 
         self.initUI()
+        
+        self.updateSequenceList() # I was missing that line !!!!!!!
 
 
         
@@ -145,7 +149,6 @@ class Window(QWidget):
         
     def dropEvent(self, event):
 
-        data_base.addItem(ImageSequenceItem())
         if event.mimeData().hasUrls() :
             
             detector = FileSequenceDetector()
@@ -160,17 +163,30 @@ class Window(QWidget):
 
             
             detector.detect_file_sequences(good_path)
-            detector.print()
+            # detector.print()
             
             if len(detector.sequences) > 0 :
                 seq = detector.sequences[0]
                 pattern = os.path.join(good_path, seq.name_pattern)
                 start_frame = seq.start_number
                 num_frames = seq.num_files
+                
+                
             
             
             
             if pattern != None:
+                # get next id
+                next_id = 0
+                for s in self.seq_list.sequences :
+                    if s.id > next_id : next_id = s.id
+                next_id = next_id + 1
+                seq_item : ImageSequenceItem = ImageSequenceItem(good_path, os.path.basename(pattern), next_id)
+                seq_item.root_dir = good_path
+                seq_item.file_pattern = os.path.basename(pattern)
+                
+                self.pending_sequence = seq_item
+
 
                 self.in_params = ffmpeg_input_params()
                 self.in_params.pattern = pattern
@@ -195,7 +211,8 @@ class Window(QWidget):
                     self.cmd_args = FFMpegCodecParams.ProRes()
                  
                  
-                if  os.path.exists(self.out_params.output_name) :            
+                if  os.path.exists(self.out_params.output_name) :    
+                    self.updateSequenceList()                            
                     name = os.path.basename(self.out_params.output_name)
                     diag = ConfirmDialog(f"<div style='font-size : 16px;'><span style='font-weight :bold;color:red;'>{name}</span> already exist in this directory.<br><br> Overwrite ?<div>", self)
                     diag.accept.connect(self.onAcceptOverwrite)
@@ -211,6 +228,9 @@ class Window(QWidget):
         self.text_area.append(message.strip())   
         
     def onAcceptOverwrite(self):
+        data_base.addItem(self.pending_sequence)
+        self.updateSequenceList()
+        # items = data_base.readItems()        
         self.ffmpeg_thread = FFMPEG_thread_V2(self.in_params, self.out_params, self.cmd_args)
         self.ffmpeg_thread.message_event.connect(self.on_ffmpeg_thread_message)
         self.ffmpeg_thread.start()
@@ -219,6 +239,13 @@ class Window(QWidget):
         print(value)
         self.settings.setGlobal_FPS(value)
 
+    def updateSequenceList(self):
+        print("UPDATING LIST !!!!!!")
+        self.seq_list = SequencesList()
+        self.seq_list.updated.connect(self.updateSequenceList)
+        self.scroll_area.setWidget(self.seq_list)
+        self.seq_list.setFixedWidth( self.scroll_area.getWidth()-2)
+        
 app = QApplication([])
 
 with open("src/style.qss", "r") as file:

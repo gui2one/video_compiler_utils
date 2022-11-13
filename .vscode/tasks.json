@@ -6,7 +6,7 @@
         {
             "label": "run main.py",
             "type": "shell",
-            "command": "${config:python.pythonPath} ./src/main.py",
+            "command": "./build_main_py.ps1",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
