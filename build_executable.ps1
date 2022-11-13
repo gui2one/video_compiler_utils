@@ -17,7 +17,9 @@ try {
     
     Copy-Item $ffmpeg_local_dir -Recurse ./dist/main/3rd-party/
     Copy-Item ./src/style.qss ./dist/main/src/
+    Copy-Item ./database.db ./dist/main/
     Copy-Item ./src/$icon ./dist/main/src/
+    Copy-Item ./src/icons -Recurse ./dist/main/src/ 
     Rename-Item ./dist/main/main.exe $exe
 
     Invoke-Expression ./dist/main/$exe
