@@ -8,17 +8,13 @@ class TextOutputWidget(QTextEdit):
     def __init__(self, parent = None):
         super(TextOutputWidget, self).__init__(parent)
         self.setObjectName("text_area")
-        # self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        # self.customContextMenuRequested.connect(self.custom_menu_requested)
-
-
         
     def mouseMoveEvent(self, e: QMouseEvent) -> None:
         if self.anchorAt(e.pos()):
             QApplication.setOverrideCursor(Qt.PointingHandCursor)
         else:
             QApplication.restoreOverrideCursor()
-        # return super().mouseMoveEvent(e)
+        return super().mouseMoveEvent(e)
     
     def mousePressEvent(self, e):
         self.anchor = self.anchorAt(e.pos())
