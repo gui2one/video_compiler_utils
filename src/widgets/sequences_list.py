@@ -4,6 +4,7 @@ from PySide2.QtGui import *
 
 from widgets.ImageSequenceItem  import ImageSequenceItem 
 import data_base
+from logger import logger
 class SequencesList(QWidget):
     
     sequences : list[ImageSequenceItem]
@@ -13,9 +14,7 @@ class SequencesList(QWidget):
         super(SequencesList, self).__init__(parent)
         self.setObjectName("SequenceList")
         self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.MinimumExpanding)
-        # self.setMinimumWidth(500)
 
-        
         self.initUI()
         
         
@@ -37,6 +36,6 @@ class SequencesList(QWidget):
     
     def onDeleteItem(self, id : int):
         data_base.deleteItem(id)
-        print(id, "-> from ImageSeq List")
+        logger.info(id, "-> from ImageSeq List")
         self.updated.emit()
         

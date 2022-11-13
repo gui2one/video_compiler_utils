@@ -4,7 +4,7 @@ import string
 import json
 from typing import List
 
-
+from logger import logger
 from application_settings import ApplicationSettings
 from widgets.ImageSequenceItem import ImageSequenceItem
 settings = ApplicationSettings()
@@ -53,13 +53,11 @@ def readItems() -> List[any]:
         db_id = int(row[0])
         time_stamp = float(row[1])
         json_str = row[2]
-        # print(json_str)
         json_data = json.loads(json_str)
         j  = ImageSequenceItem(json_data["root_dir"], json_data["file_pattern"], db_id)
         j.fromJSON(json_data)
         j.id = int(db_id)
         j.time_stamp = time_stamp
-        print(json_data)
         items.append(j)
 
     return items

@@ -3,6 +3,8 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 
 import json
+import os
+from logger import logger
 class ImageSequenceItem(QFrame):
     id : int
     time_stamp : float
@@ -27,8 +29,9 @@ class ImageSequenceItem(QFrame):
         info_layout = QVBoxLayout()
         main_layout.addLayout(info_layout)
         
-        id_label = QLabel(f"{self.id}")
-        info_layout.addWidget(id_label)
+        title_label = QLabel(f'<span style="font-weight:bold;">{os.path.basename(self.root_dir)}</span>')
+        title_label.setObjectName("title")
+        info_layout.addWidget(title_label)
         hbox1 = QHBoxLayout()
         info_layout.addLayout(hbox1)
         
@@ -73,5 +76,5 @@ class ImageSequenceItem(QFrame):
         pass
     
     def onDeletBtnClick(self):
-        print(self.id, "-> from ImageSeq Item")
+        logger.info(self.id, "-> from ImageSeq Item")
         self.deleted.emit(self.id)

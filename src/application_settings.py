@@ -1,5 +1,6 @@
 from PySide2.QtCore import QSettings, QSize, QPoint
 
+from logger import logger
 from typing import Any
 
 
@@ -42,14 +43,14 @@ class ApplicationSettings(QSettings):
         try :
             return super().value(property_name)
         except:
-            print("value not found in settings !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            logger.warning("value not found in settings")
             return None
         
     def boolValue(self, property_name) -> any :
         try :
             return super().value(property_name, type=bool)
         except Exception as e:
-            print(e)
+            logger.info(e)
             
     def setLastVisitedPath(self, path):
         self.setValue("last_path", path)

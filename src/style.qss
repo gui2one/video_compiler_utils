@@ -53,8 +53,9 @@ QPushButton#delete_btn:hover{
     background-color : darkolivegreen;
 }
 
-#ImageSequenceItem QLabel {
+#ImageSequenceItem QLabel#title {
     /* border : 1px solid red; */
+    font-size : 19px;
 }
 /* 
 QAbstractItemView{

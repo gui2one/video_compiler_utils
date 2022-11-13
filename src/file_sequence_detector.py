@@ -101,6 +101,7 @@ class FileSequenceDetector :
     def print(self):
         if len(self.sequences) :
             for seq in self.sequences:
-                print(seq)
+                logger.info(seq)
+                pass
         else : 
-            print("No sequences ....")
+            logger.info("No sequences ....")

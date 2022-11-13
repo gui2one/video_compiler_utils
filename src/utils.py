@@ -49,11 +49,11 @@ def get_ffmpeg_version() -> str:
     else : 
         return "couldn't find ffmpeg version ..."
 
-class FFMPEG_thread_V2(QThread):
+class FFMPEG_thread(QThread):
     message_event = Signal(str)
     def __init__( self, input : ffmpeg_input_params, output : ffmpeg_output_params, args : list, parent = None ):
         
-        super(FFMPEG_thread_V2, self).__init__(parent)
+        super(FFMPEG_thread, self).__init__(parent)
         self.in_params = input
         self.out_params = output
         self.cmd_args = args
@@ -117,5 +117,5 @@ class FFMPEG_thread_V2(QThread):
         self.message_event.emit(" ")
         
     def exit(self) -> None:
-        # print("Thread EXIT")
+        # logger.info("Thread EXIT")
         return super().exit()  

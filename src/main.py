@@ -18,7 +18,7 @@ from presets import FFMpegCodecParams, PRORES_profiles
 from widgets.sequences_list import SequencesList
 from widgets.ImageSequenceItem import ImageSequenceItem
 from utils import (
-    FFMPEG_thread_V2, 
+    FFMPEG_thread, 
     ffmpeg_input_params, 
     ffmpeg_output_params
 )
@@ -26,7 +26,7 @@ from widgets.int_param import IntParam
 from widgets.ScrollArea import ScrollArea
 from version_infos import VCU_VER_MAJOR, VCU_VER_MINOR, VCU_VER_REVISION
 
-
+from logger import logger
 import data_base
 
 class MainWindow(QMainWindow) :
@@ -76,7 +76,7 @@ class MainWindow(QMainWindow) :
     
 class Window(QWidget):
 
-    ffmpeg_thread : FFMPEG_thread_V2
+    ffmpeg_thread : FFMPEG_thread
     pending_sequence : ImageSequenceItem
     # text_output : TextOutputWidget
     def __init__(self, parent) :
@@ -231,16 +231,16 @@ class Window(QWidget):
         data_base.addItem(self.pending_sequence)
         self.updateSequenceList()
         # items = data_base.readItems()        
-        self.ffmpeg_thread = FFMPEG_thread_V2(self.in_params, self.out_params, self.cmd_args)
+        self.ffmpeg_thread = FFMPEG_thread(self.in_params, self.out_params, self.cmd_args)
         self.ffmpeg_thread.message_event.connect(self.on_ffmpeg_thread_message)
         self.ffmpeg_thread.start()
         
     def onRateChange(self, value):
-        print(value)
+        # logger.info(value)
         self.settings.setGlobal_FPS(value)
 
     def updateSequenceList(self):
-        print("UPDATING LIST !!!!!!")
+        # logger.info("UPDATING LIST !!!!!!")
         self.seq_list = SequencesList()
         self.seq_list.updated.connect(self.updateSequenceList)
         self.scroll_area.setWidget(self.seq_list)
