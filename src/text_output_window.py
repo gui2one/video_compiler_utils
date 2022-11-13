@@ -8,6 +8,10 @@ class TextOutputWidget(QTextEdit):
     def __init__(self, parent = None):
         super(TextOutputWidget, self).__init__(parent)
         self.setObjectName("text_area")
+        # self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        # self.customContextMenuRequested.connect(self.custom_menu_requested)
+
+
         
     def mouseMoveEvent(self, e: QMouseEvent) -> None:
         if self.anchorAt(e.pos()):
@@ -26,3 +30,11 @@ class TextOutputWidget(QTextEdit):
             QDesktopServices.openUrl(QUrl(self.anchor))
             QApplication.setOverrideCursor(Qt.ArrowCursor)
             self.anchor = None
+        
+    def contextMenuEvent(self, e: QContextMenuEvent) -> None:
+        menu = QMenu(self)
+        action1 = QAction("clear all")
+        action1.triggered.connect(lambda : self.clear())
+        menu.addAction(action1)
+        menu.addSection("hello")
+        menu.exec_(e.globalPos())

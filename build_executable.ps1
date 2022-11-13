@@ -1,5 +1,8 @@
-$exe = "vcu.exe"
+$app_name = "vcu"
+
+$exe = "$app_name.exe"
 $icon = "VCU_logo_01.ico"
+$dist_dir = "./dist/$app_name"
 Import-Module $PSScriptRoot/powershell/utils.psm1
 
 python ./versioning.py
@@ -9,20 +12,23 @@ pyinstaller --onedir `
     --noconfirm `
     --noconsole `
     --icon=VCU_logo_01.ico `
+    --name "$app_name" `
     --paths=$PSScriptRoot\env\Lib\site-packages `
     ./src/main.py
-CreateFolder("./dist/main/src/")
-CreateFolder("./dist/main/3rd-party/")
+CreateFolder("$dist_dir/src/")
+CreateFolder("$dist_dir/3rd-party/")
 try {
-    
-    Copy-Item $ffmpeg_local_dir -Recurse ./dist/main/3rd-party/
-    Copy-Item ./src/style.qss ./dist/main/src/
-    Copy-Item ./database.db ./dist/main/
-    Copy-Item ./src/$icon ./dist/main/src/
-    Copy-Item ./src/icons -Recurse ./dist/main/src/ 
-    Rename-Item ./dist/main/main.exe $exe
+    # temporary -- DO NOT leaves this in distribution !
+    Copy-Item ./database.db $dist_dir
+    ###################
 
-    Invoke-Expression ./dist/main/$exe
+    Copy-Item $ffmpeg_local_dir -Recurse $dist_dir/3rd-party/
+    Copy-Item ./src/style.qss $dist_dir/src/
+    Copy-Item ./src/$icon $dist_dir/src/
+    Copy-Item ./src/icons -Recurse $dist_dir/src/ 
+
+
+    Invoke-Expression $dist_dir/$exe
 }
 catch {}
  
