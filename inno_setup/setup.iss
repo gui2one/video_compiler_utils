@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "VCU"
-#define MyAppVersion "0.1.331"
+#define MyAppVersion "0.1.336"
 #define MyAppPublisher "gui2one Software"
 #define MyAppExeName "vcu.exe"
 
@@ -33,8 +33,8 @@ Name: "french"; MessagesFile: "compiler:Languages\French.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\gui2one\CODE\video_compiler_utils\dist\main\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\gui2one\CODE\video_compiler_utils\dist\main\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\gui2one\CODE\video_compiler_utils\dist\vcu\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\gui2one\CODE\video_compiler_utils\dist\vcu\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

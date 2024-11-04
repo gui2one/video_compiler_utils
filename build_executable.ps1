@@ -7,13 +7,14 @@ Import-Module $PSScriptRoot/powershell/utils.psm1
 
 python ./versioning.py
 
-$ffmpeg_local_dir = "C:/gui2one/ffmpeg"
+$ffmpeg_local_dir = "C:/ffmpeg"
 pyinstaller --onedir `
     --noconfirm `
     --noconsole `
     --icon=VCU_logo_01.ico `
     --name "$app_name" `
     --paths=$PSScriptRoot\env\Lib\site-packages `
+    --clean `
     ./src/main.py
 CreateFolder("$dist_dir/src/")
 CreateFolder("$dist_dir/3rd-party/")

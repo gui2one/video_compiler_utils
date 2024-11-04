@@ -2,8 +2,8 @@ from PySide2.QtCore import QSettings, QSize, QPoint
 
 from logger import logger
 from typing import Any
-
-
+import os
+import tempfile
 
 class ApplicationSettings(QSettings):
     
@@ -37,7 +37,8 @@ class ApplicationSettings(QSettings):
             self.setValue("global__fps", 25)
 
         if not self.value("database_path") :
-            self.setValue("database_path", "database.db")
+            db_path = os.path.join(tempfile.gettempdir(), "vcu_database.db")
+            self.setValue("database_path", str(db_path))
         
     def value(self, property_name : str) -> any:
         try :

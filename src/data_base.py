@@ -1,6 +1,7 @@
 import sqlite3
 from datetime import datetime
 import string
+import tempfile
 import json
 from typing import List
 
@@ -9,8 +10,7 @@ from application_settings import ApplicationSettings
 from widgets.ImageSequenceItem import ImageSequenceItem
 settings = ApplicationSettings()
 DB_FILE = settings.value("database_path")
-
-
+print("DB path : ", DB_FILE)
 
 def initDB():
 
