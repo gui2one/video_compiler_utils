@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "VCU"
-#define MyAppVersion "0.1.336"
+#define MyAppVersion "0.1.337"
 #define MyAppPublisher "gui2one Software"
 #define MyAppExeName "vcu.exe"
 
