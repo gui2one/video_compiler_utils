@@ -33,7 +33,7 @@ class FileSequenceDetector :
         if os.path.isdir(path) :
             self.all_files = self.list_files(path)
         elif os.path.isfile(path):
-            logger.info("this is a file. This is not possible at the moment ....")
+            logger.info("Drop a folder, NOT a file/files ....")
             return
 
         while len(self.all_files):

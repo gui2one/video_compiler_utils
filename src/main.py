@@ -101,6 +101,9 @@ class Window(QWidget):
 
         layout.addWidget(label,alignment=Qt.AlignCenter)
         
+        btn = QPushButton("Select Folder")
+        layout.addWidget(btn)
+        btn.clicked.connect(self.onSelectFolder)
         hbox = QHBoxLayout()
         layout.addLayout(hbox)
         hbox.setSpacing(0)
@@ -148,82 +151,87 @@ class Window(QWidget):
         event.acceptProposedAction()
         
     def dropEvent(self, event):
-
         if event.mimeData().hasUrls() :
-            
             detector = FileSequenceDetector()
             url :QUrl = event.mimeData().urls()[0]
             good_path = url.toLocalFile()
-            dir_name = os.path.basename(good_path)
-            output = os.path.join(os.path.dirname(good_path), f"{dir_name}")
-            
-            pattern = None
-            start_frame = None
-            num_frames = None
+            self.compileVideo(good_path)
+          
 
-            
-            detector.detect_file_sequences(good_path)
-            # detector.print()
-            
-            if len(detector.sequences) > 0 :
-                seq = detector.sequences[0]
-                pattern = os.path.join(good_path, seq.name_pattern)
-                start_frame = seq.start_number
-                num_frames = seq.num_files
-                
-                
-            
-            
-            
-            if pattern != None:
-                # get next id
-                next_id = 0
-                for s in self.seq_list.sequences :
-                    if s.id > next_id : next_id = s.id
-                next_id = next_id + 1
-                seq_item : ImageSequenceItem = ImageSequenceItem(good_path, os.path.basename(pattern), next_id)
-                seq_item.root_dir = good_path
-                seq_item.file_pattern = os.path.basename(pattern)
-                
-                self.pending_sequence = seq_item
-
-
-                self.in_params = ffmpeg_input_params()
-                self.in_params.pattern = pattern
-                self.in_params.start_number = start_frame
-                self.in_params.num_frames = num_frames
-                
-                self.out_params = ffmpeg_output_params()
-                
-                fps = self.settings.getGlobal_FPS()
-                self.cmd_args = []
-                if self.chooser.getCurrentIndex() == 0 :
-                    self.out_params.output_name = output+f"_H264_{fps}fps.mp4"
-                    self.out_params.vcodec = "libx264"
-                    self.cmd_args = FFMpegCodecParams.H264(quality=self.settings.getH264_CRF())
-                elif self.chooser.getCurrentIndex() == 1 :
-                    self.out_params.output_name = output+f"_H265_{fps}fps.mp4"
-                    self.out_params.vcodec = "libx265"
-                    self.cmd_args = FFMpegCodecParams.H265(quality=self.settings.getH265_CRF())
-                elif self.chooser.getCurrentIndex() == 2 :
-                    self.out_params.output_name = output+f"_PRORES_{fps}fps.mov"
-                    self.out_params.vcodec = "prores"
-                    self.cmd_args = FFMpegCodecParams.ProRes()
-                 
-                 
-                if  os.path.exists(self.out_params.output_name) :    
-                    self.updateSequenceList()                            
-                    name = os.path.basename(self.out_params.output_name)
-                    diag = ConfirmDialog(f"<div style='font-size : 16px;'><span style='font-weight :bold;color:red;'>{name}</span> already exist in this directory.<br><br> Overwrite ?<div>", self)
-                    diag.accept.connect(self.onAcceptOverwrite)
-                    diag.exec_()  
-                    
-                else:
-                    self.onAcceptOverwrite()
-                             
-
+    def onSelectFolder(self):
+        folder = QFileDialog.getExistingDirectory(self, "Select Directory")
+        if folder != "" :
+            good_path = os.path.abspath(folder)
+            self.compileVideo(good_path)
              
+    def compileVideo(self, good_path: os.path):
 
+        dir_name = os.path.basename(good_path)
+        output = os.path.join(os.path.dirname(good_path), f"{dir_name}")
+        
+        pattern = None
+        start_frame = None
+        num_frames = None
+
+        detector = FileSequenceDetector()
+        detector.detect_file_sequences(good_path)
+        # detector.print()
+        
+        if len(detector.sequences) > 0 :
+            seq = detector.sequences[0]
+            pattern = os.path.join(good_path, seq.name_pattern)
+            start_frame = seq.start_number
+            num_frames = seq.num_files
+            
+            
+        
+        
+        
+        if pattern != None:
+            # get next id
+            next_id = 0
+            for s in self.seq_list.sequences :
+                if s.id > next_id : next_id = s.id
+            next_id = next_id + 1
+            seq_item : ImageSequenceItem = ImageSequenceItem(good_path, os.path.basename(pattern), next_id)
+            seq_item.root_dir = good_path
+            seq_item.file_pattern = os.path.basename(pattern)
+            
+            self.pending_sequence = seq_item
+
+
+            self.in_params = ffmpeg_input_params()
+            self.in_params.pattern = pattern
+            self.in_params.start_number = start_frame
+            self.in_params.num_frames = num_frames
+            
+            self.out_params = ffmpeg_output_params()
+            
+            fps = self.settings.getGlobal_FPS()
+            self.cmd_args = []
+            if self.chooser.getCurrentIndex() == 0 :
+                self.out_params.output_name = output+f"_H264_{fps}fps.mp4"
+                self.out_params.vcodec = "libx264"
+                self.cmd_args = FFMpegCodecParams.H264(quality=self.settings.getH264_CRF())
+            elif self.chooser.getCurrentIndex() == 1 :
+                self.out_params.output_name = output+f"_H265_{fps}fps.mp4"
+                self.out_params.vcodec = "libx265"
+                self.cmd_args = FFMpegCodecParams.H265(quality=self.settings.getH265_CRF())
+            elif self.chooser.getCurrentIndex() == 2 :
+                self.out_params.output_name = output+f"_PRORES_{fps}fps.mov"
+                self.out_params.vcodec = "prores"
+                self.cmd_args = FFMpegCodecParams.ProRes()
+                
+                
+            if  os.path.exists(self.out_params.output_name) :    
+                self.updateSequenceList()                            
+                name = os.path.basename(self.out_params.output_name)
+                diag = ConfirmDialog(f"<div style='font-size : 16px;'><span style='font-weight :bold;color:red;'>{name}</span> already exist in this directory.<br><br> Overwrite ?<div>", self)
+                diag.accept.connect(self.onAcceptOverwrite)
+                diag.exec_()  
+                
+            else:
+                self.onAcceptOverwrite()
     def on_ffmpeg_thread_message(self, message):  
         self.text_area.append(message.strip())   
         
